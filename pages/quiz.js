@@ -1,102 +1,110 @@
 // pages/quiz.js
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { getQuestionSet } from '../data/questions-index'
+import Quiz from '../components/Quiz'
 
-const SUBJECTS = ['Maths','English','Science'];
-const AGES = [8,9,10,11,12,13,14,15];
+// Internal keys in your data + nice labels for the UI
+const SUBJECTS = [
+  { key: 'Maths',   label: 'Mathematics' },
+  { key: 'English', label: 'English' },
+  { key: 'Science', label: 'Science' }
+];
+const AGES = [8, 9, 10, 11, 12, 13, 14, 15];
 
-export default function QuizStart(){
+export default function QuizPage() {
   const router = useRouter();
-  const [subject, setSubject] = useState('Maths');
-  const [age, setAge] = useState(10);
+  const ageParam = router.query.age;
+  const subjectParam = router.query.subject;
 
-  function go(){
-    router.push(`/play?subject=${encodeURIComponent(subject)}&age=${age}`);
-  }
+  // Normalise subject to your internal key
+  const subjectKey = (() => {
+    if (typeof subjectParam !== 'string') return 'Maths';
+    const found = SUBJECTS.find(
+      s => s.key.toLowerCase() === subjectParam.toLowerCase()
+        || s.label.toLowerCase() === subjectParam.toLowerCase()
+    );
+    return found ? found.key : 'Maths';
+  })();
 
-  const quick = useMemo(() => ([
-    { subject:'Maths', age: 10 },
-    { subject:'English', age: 12 },
-    { subject:'Science', age: 15 },
-  ]),[]);
+  const age = typeof ageParam === 'string' ? parseInt(ageParam, 10) : 10;
+
+  const set = getQuestionSet(age, subjectKey);
 
   return (
-    <main className="container">
-      <Head><title>Start a Quiz · Adaptive Tutoring.ai</title></Head>
+    <>
+      <Head><title>Start a Quiz • Adaptive Tutoring.ai</title></Head>
+      <div className="container" style={{maxWidth: 860, margin: '0 auto', padding: 16}}>
+        <h1 style={{fontSize: 36, fontWeight: 800, margin: '8px 0 12px'}}>Start a Quiz</h1>
+        <p style={{color: '#60646c', marginBottom: 16}}>
+          Pick a subject and age. Each question is timed with a stopwatch;
+          you’ll get a summary of speed, accuracy, and topics to review.
+        </p>
 
-      {/* Hero */}
-      <div className="card" style={{ padding: 24, marginBottom: 16 }}>
-        <div style={{ display:'grid', gap:10, gridTemplateColumns:'1.2fr .8fr' }}>
-          <div>
-            <h1 style={{ margin:0, fontSize: 42, lineHeight:1.1 }}>Start a <span style={{ color:'var(--accent)' }}>Quiz</span></h1>
-            <p style={{ color:'var(--muted)', marginTop:10 }}>
-              Pick a subject and age. Each question is timed; you’ll see the correct answer,
-              a short explanation, and a learning video. We’ll track accuracy and time to
-              personalise your next steps.
-            </p>
-            <div style={{ marginTop:12, display:'flex', gap:10, flexWrap:'wrap' }}>
-              <span className="btn-chip">Timed questions</span>
-              <span className="btn-chip">Instant feedback</span>
-              <span className="btn-chip">Topic insights</span>
-            </div>
-          </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const f = new FormData(e.currentTarget);
+            const chosenSubject = f.get('subject');
+            const chosenAge = f.get('age');
+            router.push(`/quiz?subject=${encodeURIComponent(chosenSubject)}&age=${encodeURIComponent(chosenAge)}`);
+          }}
+          style={{display:'flex', gap: 12, alignItems:'center', flexWrap:'wrap', marginBottom: 16}}
+        >
+          <label>Subject</label>
+          <select name="subject" defaultValue={subjectKey} className="input">
+            {SUBJECTS.map(s => (
+              <option key={s.key} value={s.key}>{s.label}</option>
+            ))}
+          </select>
 
-          <div className="card" style={{ alignSelf:'center' }}>
-            <div>
-              <label>Subject</label>
-              <select value={subject} onChange={e=>setSubject(e.target.value)}>
-                {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div style={{ marginTop:10 }}>
-              <label>Age</label>
-              <select value={age} onChange={e=>setAge(Number(e.target.value))}>
-                {AGES.map(a => <option key={a} value={a}>Age {a}</option>)}
-              </select>
-            </div>
-            <div style={{ marginTop:12 }}>
-              <button className="btn btn-primary" onClick={go}>Start quiz</button>
-            </div>
-          </div>
-        </div>
-      </div>
+          <label>Age</label>
+          <select name="age" defaultValue={age} className="input">
+            {AGES.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
 
-      {/* Subject cards */}
-      <div className="grid">
-        {SUBJECTS.map((s,i)=>(
-          <div className="card" key={s}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ fontWeight:800, fontSize:20 }}>{s}</div>
-              <span className="kbd">Ages 8–15</span>
-            </div>
-            <p style={{ color:'var(--muted)', marginTop:6 }}>
-              {s === 'Maths' && '20 MCQs with arithmetic, fractions, geometry, and data.'}
-              {s === 'English' && 'Vocabulary, grammar, punctuation, and comprehension.'}
-              {s === 'Science' && 'KS2–GCSE concepts: forces, plants, electricity, space.'}
-            </p>
-            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-              {[8,10,15].map(a => (
-                <a key={a} className="btn btn-ghost" href={`/play?subject=${s}&age=${a}`}>
-                  Age {a}
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+          <button className="btn btn-primary" type="submit">Start quiz</button>
+        </form>
 
-      {/* Quick start links */}
-      <div className="card" style={{ marginTop:16 }}>
-        <div style={{ fontWeight:800, marginBottom:8 }}>Quick start</div>
-        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-          {quick.map((q,i)=>(
-            <a key={i} href={`/play?subject=${q.subject}&age=${q.age}`} className="btn btn-primary">
-              {q.subject} {q.age}
-            </a>
+        <div style={{display:'grid', gap:12, gridTemplateColumns:'repeat(auto-fit, minmax(220px,1fr))', marginBottom: 20}}>
+          {SUBJECTS.map(s => (
+            <div key={s.key} className="card">
+              <div style={{fontWeight:700}}>{s.label}</div>
+              <div style={{display:'flex', gap:10, marginTop:10, flexWrap:'wrap'}}>
+                {[8,10,12,15].map(a => (
+                  <a
+                    key={a}
+                    className="btn btn-chip"
+                    href={`/quiz?subject=${encodeURIComponent(s.key)}&age=${a}`}
+                  >
+                    Age {a}
+                  </a>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
+
+        {(!set || !set.questions || set.questions.length === 0) ? (
+          <div className="card">
+            <h3 style={{marginTop:0}}>No questions found</h3>
+            <p style={{color:'#60646c'}}>
+              We couldn’t find a set for <b>{SUBJECTS.find(s=>s.key===subjectKey)?.label}</b> at age <b>{age}</b>.
+              Make sure the age file exports that subject and that it’s imported in <code>data/questions-index.js</code>.
+            </p>
+          </div>
+        ) : (
+          <Quiz set={set} />
+        )}
       </div>
-    </main>
+
+      <style jsx global>{`
+        .input { padding:8px 10px; border:1px solid #e3e5e8; border-radius:10px; }
+        .btn { padding:10px 14px; border-radius:12px; border:1px solid #e3e5e8; background:#fff; }
+        .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
+        .btn-chip { background:#eef2ff; border-color:#c7d2fe; }
+        .card { border:1px solid #e3e5e8; border-radius:16px; padding:14px; background:#fff; }
+      `}</style>
+    </>
   );
 }
