@@ -1,115 +1,66 @@
 // pages/quiz/[subject].js
-import { useState } from "react";
-import questions from "@/data/questions";
-import Quiz from "@/components/Quiz";
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
-export default function SubjectQuiz({ subject, age, items }) {
-  const [result, setResult] = useState(null);
+// ✅ Relative path (no "@/..." alias)
+const Quiz = dynamic(
+  () => import('../../components/Quiz.jsx').then((m) => m.default ?? m.Quiz),
+  { ssr: false }
+);
 
-  if (!items?.length) {
+// Valid subjects
+const SUBJECTS = ['Maths', 'English', 'Science'];
+
+export default function SubjectQuizPage() {
+  const router = useRouter();
+  const { subject: subjectParam, age: ageParam } = router.query;
+
+  const [setData, setSetData] = useState(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    // Normalise params
+    const subject = SUBJECTS.includes(String(subjectParam))
+      ? String(subjectParam)
+      : 'Maths';
+    const age =
+      typeof ageParam === 'string' ? parseInt(ageParam, 10) : 8;
+
+    // ✅ Import data helper on the client and fetch the set
+    import('../../data/questions-index.js')
+      .then(({ getQuestionSet }) => {
+        const set = getQuestionSet(age, subject);
+        setSetData(set ?? null);
+      })
+      .finally(() => setReady(true));
+  }, [router.isReady, subjectParam, ageParam]);
+
+  if (!ready) return null;
+
+  if (!setData) {
+    const link = (a, s) => `/quiz/${encodeURIComponent(s)}?age=${a}`;
     return (
-      <div className="max-w-xl mx-auto p-6">
-        <h1 className="text-2xl font-semibold">No questions yet</h1>
-        <p className="text-gray-600 mt-2">
-          We don't have questions for <b>{subject}</b> at age <b>{age}</b> yet.
+      <main style={{ maxWidth: 900, margin: '0 auto', padding: 16 }}>
+        <h1 style={{ fontSize: 20, fontWeight: 600 }}>No questions found</h1>
+        <p style={{ marginTop: 8 }}>
+          We couldn’t find a set for this selection.
         </p>
-        <p className="text-gray-600 mt-2">
-          Try a different age using <code>?age=10</code> to <code>?age=15</code> in the URL.
+        <p style={{ marginTop: 8 }}>
+          Try:{' '}
+          <a href={link(8, 'Maths')}>Age 8 · Maths</a> ·{' '}
+          <a href={link(10, 'English')}>Age 10 · English</a> ·{' '}
+          <a href={link(15, 'Science')}>Age 15 · Science</a>
         </p>
-      </div>
+      </main>
     );
   }
 
-  return result ? (
-    <Results subject={subject} age={age} result={result} />
-  ) : (
-    <Quiz subject={subject} items={items} onFinish={setResult} />
-  );
-}
-
-// ✅ Server-side: load subject + age, return items for this quiz
-export async function getServerSideProps({ params, query }) {
-  const subject = (params.subject || "").toLowerCase();
-  const age = String(query.age || "10"); // default age 10 if none provided
-  const items = questions[subject]?.[age] || [];
-  return { props: { subject, age, items } };
-}
-
-// ────────────────────────────────────────────────────────────────────────────────
-// Results UI (summaries + tables) — uses the summary object from Quiz.onFinish
-function Results({ subject, age, result }) {
-  const { overall, topics, perQuestion, struggling } = result;
-
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-8">
-      <div className="rounded-2xl p-6 shadow bg-white">
-        <h1 className="text-2xl font-semibold mb-2 capitalize">
-          {subject} • Age {age} — Results
-        </h1>
-        <p className="text-gray-700">
-          Score: <b>{overall.correct}/{overall.total}</b> ({overall.accuracy}%) • Avg time:
-          {" "}<b>{overall.avgTime}s</b>
-        </p>
-        {struggling?.length ? (
-          <p className="mt-2">
-            🔎 You may be struggling with: <b>{struggling.join(", ")}</b>.
-          </p>
-        ) : (
-          <p className="mt-2">🚀 No obvious weak spots — great job!</p>
-        )}
-        <div className="mt-4">
-          <a
-            href={`/quiz/${subject}?age=${age}`}
-            className="inline-block px-4 py-2 rounded-xl bg-blue-600 text-white"
-          >
-            Try again
-          </a>
-        </div>
-      </div>
-
-      <div className="rounded-2xl p-6 shadow bg-white">
-        <h2 className="text-xl font-semibold mb-3">By topic</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b">
-                <th className="py-2">Topic</th>
-                <th>Seen</th>
-                <th>Accuracy</th>
-                <th>Avg Time (s)</th>
-                <th>Target (s)</th>
-                <th>Slow Factor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topics.map((t) => (
-                <tr key={t.topic} className="border-b">
-                  <td className="py-2">{t.topic}</td>
-                  <td>{t.seen}</td>
-                  <td>{t.accuracy}%</td>
-                  <td>{t.avgTime}</td>
-                  <td>{t.targetAvg}</td>
-                  <td>{t.slowFactor}×</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="rounded-2xl p-6 shadow bg-white">
-        <h2 className="text-xl font-semibold mb-3">Per question</h2>
-        <ul className="space-y-2">
-          {perQuestion.map((r, idx) => (
-            <li key={r.id} className="flex justify-between border rounded-xl p-3">
-              <span>
-                Q{idx + 1}: <b>{r.id}</b> • {r.topic}
-              </span>
-              <span>{r.correct ? "✅" : "❌"} • {r.time}s</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <main style={{ maxWidth: 900, margin: '0 auto', padding: 16 }}>
+      <Quiz set={setData} />
+    </main>
   );
 }
