@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  email         String   @unique
+  username      String   @unique
+  name          String?
+  passwordHash  String
+
+  // sharing read-only dashboard (for parents/teachers)
+  publicKey     String   @unique @default(cuid())
+
+  attempts      Attempt[]
+  assignments   Assignment[]
+}
+
+model Attempt {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  age          Int
+  subject      String   // "Maths" | "English" | "Science"
+  score        Int
+  total        Int
+  avgTimeSec   Int
+
+  questionResults QuestionResult[]
+}
+
+model QuestionResult {
+  id          String   @id @default(cuid())
+  attemptId   String
+  attempt     Attempt  @relation(fields: [attemptId], references: [id])
+
+  questionId  String
+  topic       String?
+  correct     Boolean
+  timeSec     Int
+}
+
+model VideoResource {
+  id          String   @id @default(cuid())
+  subject     String
+  topic       String
+  title       String
+  url         String
+  createdAt   DateTime @default(now())
+
+  assignments Assignment[]
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+
+  videoId     String
+  video       VideoResource @relation(fields: [videoId], references: [id])
+
+  note        String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+}
