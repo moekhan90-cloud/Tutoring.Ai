@@ -1,22 +1,58 @@
 // pages/quiz.js
+import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ALL_QUESTION_SETS } from '../data/questions-index';
-import Quiz from '../components/Quiz';
+
+// adjust these paths to match your repo layout
+import { getQuestionSet } from '../data/questions-index';
+import Quiz from '../components/Quiz'; // your existing Quiz component (JS/JSX)
+
+const SUBJECTS = ['Maths', 'English', 'Science'];
 
 export default function QuizPage() {
   const router = useRouter();
-  const age = parseInt(router.query.age, 10);
-  const subject = router.query.subject;
-  const set = ALL_QUESTION_SETS.find(s => s.age === age && s.subject === subject);
+  const { age: ageParam, subject: subjectParam } = router.query;
 
-  if (!set) {
-    return (
-      <div style={{maxWidth: 720, margin: '2rem auto', padding: '1rem'}}>
-        <h1 style={{fontSize: '1.5rem', fontWeight: 700}}>Set not found</h1>
-        <p>Try <code>/quiz?age=8&subject=Maths</code> (or English/Science). Also ensure you added the JS data files.</p>
-      </div>
-    );
-  }
+  const age =
+    typeof ageParam === 'string' ? parseInt(ageParam, 10) : Number(ageParam ?? 8);
 
-  return <Quiz set={set} />;
+  const subject = SUBJECTS.includes(String(subjectParam))
+    ? String(subjectParam)
+    : 'Maths';
+
+  const set = getQuestionSet(age, subject);
+
+  return (
+    <>
+      <Head>
+        <title>{`Quiz · Age ${age} · ${subject}`}</title>
+        <meta
+          name="description"
+          content="Multiple choice questions with instant feedback and learning videos."
+        />
+      </Head>
+
+      <main style={{ maxWidth: 900, margin: '0 auto', padding: 16 }}>
+        {!set ? (
+          <div style={{ padding: 16 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 600 }}>
+              No questions found
+            </h1>
+            <p style={{ marginTop: 8 }}>
+              We couldn’t find a set for <strong>Age {age}</strong> ·{' '}
+              <strong>{subject}</strong>.
+            </p>
+            <p style={{ marginTop: 8 }}>
+              Try:
+              <br />
+              <a href="/quiz?age=8&subject=Maths">Age 8 · Maths</a> ·{' '}
+              <a href="/quiz?age=10&subject=English">Age 10 · English</a> ·{' '}
+              <a href="/quiz?age=15&subject=Science">Age 15 · Science</a>
+            </p>
+          </div>
+        ) : (
+          <Quiz set={set} />
+        )}
+      </main>
+    </>
+  );
 }
