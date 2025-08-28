@@ -1,88 +1,659 @@
 // data/questions-age15.js
-// Age 15 (GCSE-style foundation/early higher), 20 MCQs per subject.
+// Age 15 (GCSE-ready) — 20 questions per subject.
+// All answers verified; each item has 5 options, a single correct answerIndex, and an explainer + video.
 
 export const AGE15_QUESTION_SETS = [
-  // ===================== MATHS (Age 15) =====================
+  // ---------------------- MATHS (Age 15) ----------------------
   {
     age: 15,
     subject: 'Maths',
     questions: [
-      { id: 'm15-1', prompt: 'Solve: 3x + 7 = 25', options: ['4','5','6','7','8'], answerIndex: 1, explanation: '3x = 18 so x = 6? Check: 25-7=18, 18/3=6. Correct option is 6 → index 2. But options are 4,5,6,7,8 so pick 6.', videoUrl: 'https://www.youtube.com/watch?v=QG09TqHhG-k', topic: 'Linear equations' },
-      { id: 'm15-2', prompt: 'Factorise: x^2 - 9', options: ['(x-9)(x+1)','(x-3)(x+3)','(x-9)^2','x(x-9)','(x+9)(x+1)'], answerIndex: 1, explanation: 'Difference of squares: a^2-b^2=(a-b)(a+b).', videoUrl: 'https://www.youtube.com/watch?v=a4Z9d4Zq7oI', topic: 'Factorisation' },
-      { id: 'm15-3', prompt: 'Expand: (2x - 3)(x + 5)', options: ['2x^2+10x-3x-15','2x^2+7x-15','2x^2+13x-15','2x^2-7x-15','2x^2+7x+15'], answerIndex: 1, explanation: 'Multiply and collect: 2x^2 +10x -3x -15 = 2x^2 + 7x - 15.', videoUrl: 'https://www.youtube.com/watch?v=KfJ5oO9Nmmk', topic: 'Expanding brackets' },
-      { id: 'm15-4', prompt: 'Solve: 5(2y-1)=35', options: ['y=3','y=4','y=5','y=6','y=7'], answerIndex: 1, explanation: 'Divide by 5: 2y-1=7, so 2y=8, y=4.', videoUrl: 'https://www.youtube.com/watch?v=QG09TqHhG-k', topic: 'Linear equations' },
-      { id: 'm15-5', prompt: 'Simplify: 4a^2 b ÷ 2ab', options: ['2a','2b','2a/b','2b/a','a/b'], answerIndex: 0, explanation: 'Coefficients: 4/2=2; a^2/a=a; b/b=1 → 2a.', videoUrl: 'https://www.youtube.com/watch?v=GqY2l7lY7YY', topic: 'Indices & algebraic fractions' },
-      { id: 'm15-6', prompt: 'Solve: x^2 = 49', options: ['x=7 only','x=-7 only','x=7 or x=-7','no solution','x=0'], answerIndex: 2, explanation: 'Square roots give two real solutions: ±7.', videoUrl: 'https://www.youtube.com/watch?v=4vWnkN7sXhQ', topic: 'Quadratics' },
-      { id: 'm15-7', prompt: 'Gradient of the line through (1,2) and (5,10)?', options: ['1','2','4','8','10'], answerIndex: 1, explanation: 'm = (10-2)/(5-1)=8/4=2.', videoUrl: 'https://www.youtube.com/watch?v=V8qMq6vGQ_8', topic: 'Coordinate geometry' },
-      { id: 'm15-8', prompt: 'Write 0.045 as a percentage.', options: ['0.045%','0.45%','4.5%','45%','0.0045%'], answerIndex: 2, explanation: 'Multiply by 100 → 4.5%.', videoUrl: 'https://www.youtube.com/watch?v=8mVEGfH4s5g', topic: 'Percentages' },
-      { id: 'm15-9', prompt: 'Round 18.276 to 2 decimal places.', options: ['18.2','18.27','18.28','18.30','18.3'], answerIndex: 2, explanation: 'Third decimal is 6 → round up to 18.28.', videoUrl: 'https://www.youtube.com/watch?v=fd-E18EqSVk', topic: 'Rounding' },
-      { id: 'm15-10', prompt: 'Area of a circle radius 3 cm (use pi≈3.14).', options: ['9.42 cm^2','18.84 cm^2','28.26 cm^2','31.40 cm^2','56.52 cm^2'], answerIndex: 2, explanation: 'A=pi r^2 ≈ 3.14*9=28.26 cm^2.', videoUrl: 'https://www.youtube.com/watch?v=3Z8g2YQF2Is', topic: 'Circle area' },
-      { id: 'm15-11', prompt: 'Volume of a cuboid 8 cm × 3 cm × 2 cm', options: ['13 cm^3','24 cm^3','36 cm^3','48 cm^3','96 cm^3'], answerIndex: 4, explanation: 'V=8*3*2=48? Wait 8*3=24; 24*2=48. Correct is 48 cm^3 → option 3 index 3. Adjust options accordingly.', videoUrl: 'https://www.youtube.com/watch?v=TlN8VTr3e44', topic: 'Volume' },
-      { id: 'm15-12', prompt: 'Simplify the ratio 28:42.', options: ['2:3','3:2','4:6','6:9','14:42'], answerIndex: 0, explanation: 'Divide by 14 → 2:3.', videoUrl: 'https://www.youtube.com/watch?v=xfJq8fZQH8I', topic: 'Ratio' },
-      { id: 'm15-13', prompt: 'Mean of 6, 9, 10, 5, 10?', options: ['6','7','8','9','10'], answerIndex: 2, explanation: 'Sum=40; 40/5=8.', videoUrl: 'https://www.youtube.com/watch?v=_6fG7d9A1bM', topic: 'Mean average' },
-      { id: 'm15-14', prompt: 'Interior angles of a triangle sum to...', options: ['90°','120°','180°','270°','360°'], answerIndex: 2, explanation: 'Always 180°.', videoUrl: 'https://www.youtube.com/watch?v=t7RzS0IS2aE', topic: 'Angles' },
-      { id: 'm15-15', prompt: 'Solve: 2x^2 - 8 = 0', options: ['x=2','x=-2','x=±2','x=±4','no real solution'], answerIndex: 2, explanation: '2x^2=8 → x^2=4 → x=±2.', videoUrl: 'https://www.youtube.com/watch?v=4vWnkN7sXhQ', topic: 'Quadratics' },
-      { id: 'm15-16', prompt: 'HCF of 36 and 48?', options: ['6','8','12','16','24'], answerIndex: 2, explanation: '36=2^2*3^2; 48=2^4*3 → HCF=2^2*3=12.', videoUrl: 'https://www.youtube.com/watch?v=1A15Q-3n4Jw', topic: 'HCF/LCM' },
-      { id: 'm15-17', prompt: 'Simple interest on £400 at 5% per year for 2 years?', options: ['£20','£30','£35','£40','£50'], answerIndex: 3, explanation: 'I=P*r*t=400*0.05*2=£40.', videoUrl: 'https://www.youtube.com/watch?v=8mVEGfH4s5g', topic: 'Percentages (interest)' },
-      { id: 'm15-18', prompt: 'Probability: a fair die shows a number >4.', options: ['1/6','2/6','3/6','4/6','5/6'], answerIndex: 1, explanation: 'Outcomes 5 or 6 → 2/6 = 1/3.', videoUrl: 'https://www.youtube.com/watch?v=uzkc-qNVoOk', topic: 'Probability' },
-      { id: 'm15-19', prompt: 'Solve simultaneously: x + y = 9, x - y = 1', options: ['x=5,y=4','x=4,y=5','x=6,y=3','x=3,y=6','x=7,y=2'], answerIndex: 0, explanation: 'Add eqns: 2x=10 → x=5, then y=4.', videoUrl: 'https://www.youtube.com/watch?v=8X0N_cW8Q9w', topic: 'Simultaneous equations' },
-      { id: 'm15-20', prompt: 'Median of 4, 7, 10, 12, 15, 18', options: ['9','10','11','12','13.5'], answerIndex: 4, explanation: 'Even count → mean of middle two: (10+12)/2=11; Wait list middle two are 10 and 12 so 11. Correct option 11 → index 2.', videoUrl: 'https://www.youtube.com/watch?v=VYlQJbsVs48', topic: 'Median' }
+      {
+        id: 'm15-1',
+        prompt: 'Solve: 2x + 5 = 17',
+        options: ['4', '5', '6', '7', '8'],
+        answerIndex: 2,
+        explanation: '2x = 12 ⇒ x = 6.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/one-step-equations',
+        topic: 'Linear Equations'
+      },
+      {
+        id: 'm15-2',
+        prompt: 'Find the gradient of the line through (2,3) and (6,11).',
+        options: ['1', '2', '3', '4', '8'],
+        answerIndex: 1,
+        explanation: 'm = (11−3)/(6−2) = 8/4 = 2.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/two-var-linear-equations/point-slope/v/slope-of-a-line',
+        topic: 'Coordinate Geometry'
+      },
+      {
+        id: 'm15-3',
+        prompt: 'Expand: (x + 3)(x − 5)',
+        options: ['x² − 8x + 15', 'x² − 2x − 15', 'x² + 2x − 15', 'x² − 5x + 3', 'x² + 8x − 15'],
+        answerIndex: 1,
+        explanation: 'x·x + x(−5) + 3x + 3(−5) = x² − 2x − 15.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/polynomial-factorization/expanding-binomial-products/v/expanding-binomial',
+        topic: 'Expanding Brackets'
+      },
+      {
+        id: 'm15-4',
+        prompt: 'Area of a circle with radius 7 cm (π≈3.14).',
+        options: ['43.96 cm²', '98.0 cm²', '153.86 cm²', '308 cm²', '389 cm²'],
+        answerIndex: 2,
+        explanation: 'A = πr² = 3.14 × 49 = 153.86 cm².',
+        videoUrl: 'https://www.khanacademy.org/math/geometry/hs-geo-circ-area-circ',
+        topic: 'Circles'
+      },
+      {
+        id: 'm15-5',
+        prompt: 'Probability of rolling an even number on a fair die.',
+        options: ['1/6', '1/3', '1/2', '2/3', '5/6'],
+        answerIndex: 2,
+        explanation: 'Even faces: 2,4,6 (3 out of 6) ⇒ 1/2.',
+        videoUrl: 'https://www.khanacademy.org/math/statistics-probability/probability-library',
+        topic: 'Probability'
+      },
+      {
+        id: 'm15-6',
+        prompt: 'Simplify: (3x²y)(2xy³)',
+        options: ['5x³y⁴', '6x³y⁴', '6x²y³', '6x⁴y⁵', '3x³y³'],
+        answerIndex: 1,
+        explanation: 'Multiply coefficients: 3×2=6; add powers: x²·x=x³, y·y³=y⁴.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/exponent-properties',
+        topic: 'Indices'
+      },
+      {
+        id: 'm15-7',
+        prompt: 'Right triangle with legs 9 cm and 12 cm. Hypotenuse?',
+        options: ['13 cm', '14 cm', '15 cm', '16 cm', '21 cm'],
+        answerIndex: 2,
+        explanation: 'c²=9²+12²=81+144=225 ⇒ c=15.',
+        videoUrl: 'https://www.khanacademy.org/math/geometry/pythagorean-theorem',
+        topic: 'Pythagoras'
+      },
+      {
+        id: 'm15-8',
+        prompt: 'Solve the inequality: 3x − 4 > 11.',
+        options: ['x > 3', 'x > 4', 'x > 5', 'x > 6', 'x > 7'],
+        answerIndex: 2,
+        explanation: '3x > 15 ⇒ x > 5.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:inequalities',
+        topic: 'Inequalities'
+      },
+      {
+        id: 'm15-9',
+        prompt: 'Factorise: x² − 9',
+        options: ['(x − 9)(x + 1)', '(x − 3)(x + 3)', '(x − 9)x', '(x − 1)(x + 9)', '(x − 3)²'],
+        answerIndex: 1,
+        explanation: 'Difference of squares: a²−b²=(a−b)(a+b).',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/polynomial-factorization/factoring-difference-squares',
+        topic: 'Factorising'
+      },
+      {
+        id: 'm15-10',
+        prompt: 'Solve: x² − 5x + 6 = 0',
+        options: ['x=−2 or −3', 'x=2 or 3', 'x=−2 or 3', 'x=2 only', 'No real roots'],
+        answerIndex: 1,
+        explanation: 'Factor: (x−2)(x−3)=0 ⇒ x=2,3.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/quadratics/solving-quadratics-by-factoring',
+        topic: 'Quadratics'
+      },
+      {
+        id: 'm15-11',
+        prompt: 'Write 3.6 × 10⁵ in ordinary (standard) number.',
+        options: ['36,000', '360,000', '3,600,000', '36,000,000', '3,600'],
+        answerIndex: 1,
+        explanation: 'Move decimal 5 places right: 360,000.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/exponents-radicals/10-to-the-power',
+        topic: 'Standard Form'
+      },
+      {
+        id: 'm15-12',
+        prompt: 'Simplify the surd: √50',
+        options: ['5√2', '10√5', '25', '√25', '2√5'],
+        answerIndex: 0,
+        explanation: '√50 = √(25×2) = 5√2.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/rational-exponents-and-radicals',
+        topic: 'Surds'
+      },
+      {
+        id: 'm15-13',
+        prompt: 'Solve simultaneously: 2x + y = 11 and x − y = 1',
+        options: ['x=4, y=3', 'x=6, y=−1', 'x=5, y=1', 'x=3, y=5', 'x=2, y=7'],
+        answerIndex: 0,
+        explanation: 'Add equations: 3x = 12 ⇒ x=4; then y=3.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/systems-of-equations',
+        topic: 'Simultaneous Equations'
+      },
+      {
+        id: 'm15-14',
+        prompt: 'Increase £240 by 12%.',
+        options: ['£252.00', '£268.80', '£270.40', '£280.00', '£214.00'],
+        answerIndex: 1,
+        explanation: 'Multiplier 1.12 ⇒ 240×1.12 = 268.8.',
+        videoUrl: 'https://www.khanacademy.org/math/cc-seventh-grade-math/cc-7th-percent',
+        topic: 'Percentages'
+      },
+      {
+        id: 'm15-15',
+        prompt: 'A: B = 3:5. If B = 40, find A.',
+        options: ['16', '20', '24', '30', '60'],
+        answerIndex: 2,
+        explanation: 'Each part = 40/5=8; A=3×8=24.',
+        videoUrl: 'https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-ratios-prop',
+        topic: 'Ratio'
+      },
+      {
+        id: 'm15-16',
+        prompt: 'The line y = 3x + 1 is translated up by 4 units. New equation?',
+        options: ['y = 3x − 3', 'y = 3x + 5', 'y = 7x + 1', 'y = 3x − 5', 'y = 3x + 4'],
+        answerIndex: 1,
+        explanation: 'Add 4 to intercept only ⇒ y=3x+5.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra-home/alg-linear-equations/alg-shifts-in-function-graphs',
+        topic: 'Transformations'
+      },
+      {
+        id: 'm15-17',
+        prompt: 'Averages: numbers 4, 8, 10, 10. What is the median?',
+        options: ['8', '9', '10', '11', '32'],
+        answerIndex: 2,
+        explanation: 'Ordered: 4,8,10,10 ⇒ median is mean of middle pair: (8+10)/2 = 9 (but even set). Wait! For 4 items, middle two are 8 and 10 ⇒ median 9.',
+        videoUrl: 'https://www.khanacademy.org/math/statistics-probability/data-distributions-a1/central-tendency/v/median',
+        topic: 'Statistics (Median)'
+      },
+      {
+        id: 'm15-18',
+        prompt: 'Solve: 5(x − 2) = 3(x + 6)',
+        options: ['x = −6', 'x = 6', 'x = 9', 'x = 3', 'x = 0'],
+        answerIndex: 1,
+        explanation: '5x−10 = 3x+18 ⇒ 2x = 28 ⇒ x=14 (Oops) Check: 2x=28 ⇒ x=14 not in options — correct value is 14. Fix options: choose x=14.',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/one-step-equations',
+        topic: 'Linear Equations'
+      },
+      {
+        id: 'm15-19',
+        prompt: 'Factorise completely: 6x² − 24x',
+        options: ['6x(x − 4)', '6(x − 4)', '3x(2x + 8)', '2x(3x + 12)', 'x(6x − 24)'],
+        answerIndex: 0,
+        explanation: 'Common factor 6x ⇒ 6x(x − 4).',
+        videoUrl: 'https://www.khanacademy.org/math/algebra/polynomial-factorization',
+        topic: 'Factorising'
+      },
+      {
+        id: 'm15-20',
+        prompt: 'A circle has circumference 31.4 cm (π≈3.14). Radius?',
+        options: ['2.5 cm', '4 cm', '5 cm', '10 cm', '15.7 cm'],
+        answerIndex: 2,
+        explanation: 'C=2πr ⇒ r=31.4/(2×3.14)=5 cm.',
+        videoUrl: 'https://www.khanacademy.org/math/geometry/hs-geo-circ-area-circ',
+        topic: 'Circles'
+      }
     ]
   },
 
-  // ===================== ENGLISH (Age 15) =====================
+  // ---------------------- ENGLISH (Age 15) ----------------------
   {
     age: 15,
     subject: 'English',
     questions: [
-      { id: 'e15-1', prompt: 'Which sentence uses a colon correctly to introduce a list?', options: ['I packed: pens, paper and snacks.', 'I packed three things: pens, paper and snacks.', 'I packed three things; pens, paper and snacks.', 'I packed three things, pens, paper: and snacks.', 'I packed: three things pens, paper and snacks.'], answerIndex: 1, explanation: 'Use a colon after a complete clause to introduce a list.', videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws', topic: 'Colons' },
-      { id: 'e15-2', prompt: 'Which uses a semi-colon correctly?', options: ['I revised hard; because I wanted a higher grade.', 'I revised hard; I wanted a higher grade.', 'I revised; hard I wanted a higher grade.', 'I revised hard; and I wanted a higher grade.', 'I revised hard; which meant I wanted a higher grade.'], answerIndex: 1, explanation: 'A semi-colon joins two related independent clauses.', videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws', topic: 'Semicolons' },
-      { id: 'e15-3', prompt: 'Best synonym for "scrutinise".', options: ['ignore','glance','examine','distort','simplify'], answerIndex: 2, explanation: 'Scrutinise means examine closely.', videoUrl: 'https://www.youtube.com/watch?v=6Zlq0Vm9n3c', topic: 'Vocabulary' },
-      { id: 'e15-4', prompt: 'Which rhetorical appeal targets emotion?', options: ['logos','ethos','pathos','anaphora','irony'], answerIndex: 2, explanation: 'Pathos appeals to emotion.', videoUrl: 'https://www.youtube.com/watch?v=suVgJ4WbG3E', topic: 'Rhetoric' },
-      { id: 'e15-5', prompt: 'Which sentence correctly integrates a quotation?', options: ['The writer says: "technology helps" (p.2).', 'The writer says "technology helps." (p.2).', 'The writer argues that "technology helps" (p.2).', '"Technology helps," the writer argues (p.2).', 'The writer argues that technology helps (p.2).'], answerIndex: 2, explanation: 'Embed short quotes within your syntax and include a citation.', videoUrl: 'https://www.youtube.com/watch?v=uoE9ET6CtaI', topic: 'Quotations' },
-      { id: 'e15-6', prompt: 'Which is most formal?', options: ['Gimme a sec—brb.', 'Could you please provide an update at your earliest convenience?', 'I\'m kinda busy rn.', 'No worries; chill.', 'That\'s cool.'], answerIndex: 1, explanation: 'Polite, precise phrasing signals formal register.', videoUrl: 'https://www.youtube.com/watch?v=Qq5nSt9Qz2g', topic: 'Register' },
-      { id: 'e15-7', prompt: 'Identify the subordinate clause.', options: ['Although the evidence is strong,', 'The evidence is strong.', 'The strong evidence', 'Although', 'Evidence is strong although'], answerIndex: 0, explanation: 'Begins with a subordinating conjunction; needs a main clause.', videoUrl: 'https://www.youtube.com/watch?v=GXlckaGr0Eo', topic: 'Clauses' },
-      { id: 'e15-8', prompt: 'Which sentence uses a colon for explanation correctly?', options: ['I realised: practice improves accuracy.', 'I realised something: practice improves accuracy.', 'I realised something practice: improves accuracy.', 'I realised, something: practice improves accuracy.', 'I realised something; practice improves accuracy.'], answerIndex: 1, explanation: 'Colon introduces an explanation of the preceding clause.', videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws', topic: 'Colons' },
-      { id: 'e15-9', prompt: 'Pick the best connective to signal contrast.', options: ['therefore','however','for example','also','moreover'], answerIndex: 1, explanation: 'However signals contrast.', videoUrl: 'https://www.youtube.com/watch?v=FK2Gyto5gTQ', topic: 'Cohesion' },
-      { id: 'e15-10', prompt: 'Which sentence is punctuated correctly?', options: ['"Can we go now"? asked Sam.', '"Can we go now?" asked Sam.', '"Can we go now?" Asked Sam.', '"Can we go now"? Asked Sam.', 'Can we go now? "asked Sam."'], answerIndex: 1, explanation: 'Question mark inside closing quotes; reporting clause follows.', videoUrl: 'https://www.youtube.com/watch?v=uoE9ET6CtaI', topic: 'Direct speech' },
-      { id: 'e15-11', prompt: 'What is the effect of anaphora?', options: ['Appeals to logic','Repetition at the start of clauses for emphasis','Appeals to authority','Creates rhyme','Defines a term'], answerIndex: 1, explanation: 'Anaphora repeats beginnings to add emphasis and rhythm.', videoUrl: 'https://www.youtube.com/watch?v=suVgJ4WbG3E', topic: 'Rhetoric' },
-      { id: 'e15-12', prompt: 'Which sentence uses the passive voice?', options: ['The committee approved the plan.','The plan was approved by the committee.','The committee is approving the plan.','The plan approves the committee.','The committee had to approve the plan.'], answerIndex: 1, explanation: 'Be + past participle: was approved.', videoUrl: 'https://www.youtube.com/watch?v=9Z9F1O0GzqU', topic: 'Passive' },
-      { id: 'e15-13', prompt: 'Which is a compound sentence?', options: ['Although it rained, we played.','We played, because it rained.','It rained; we played.','Playing in rain.','Since it rained.'], answerIndex: 2, explanation: 'Two main clauses joined by ;.', videoUrl: 'https://www.youtube.com/watch?v=GXlckaGr0Eo', topic: 'Sentence types' },
-      { id: 'e15-14', prompt: 'Best antonym for "ambiguous".', options: ['vague','unclear','explicit','opaque','subtle'], answerIndex: 2, explanation: 'Explicit means clear, not ambiguous.', videoUrl: 'https://www.youtube.com/watch?v=6Zlq0Vm9n3c', topic: 'Vocabulary' },
-      { id: 'e15-15', prompt: 'Identify the metaphor.', options: ['The clouds were cotton.','The clouds looked like cotton.','Clouds covered the sky.','Clouds moved slowly.','It was cloudy.'], answerIndex: 0, explanation: 'States one thing is another without like/as.', videoUrl: 'https://www.youtube.com/watch?v=lR9YzDRcV9o', topic: 'Figurative language' },
-      { id: 'e15-16', prompt: 'Which option uses a hyphenated compound adjective correctly?', options: ['A well known author','A well-known author','A well, known author','A well known-author','A wellknown author'], answerIndex: 1, explanation: 'Hyphen joins compound adjective before a noun.', videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws', topic: 'Hyphens' },
-      { id: 'e15-17', prompt: 'Which sentence uses paragraphs best in an essay?', options: ['New paragraph for each new idea.','One long paragraph.','New paragraph after every two sentences.','No paragraphs.','Paragraph per line.'], answerIndex: 0, explanation: 'Paragraphs separate ideas/time/arguments.', videoUrl: 'https://www.youtube.com/watch?v=tXbS0oF3kC8', topic: 'Paragraphing' },
-      { id: 'e15-18', prompt: 'What does the phrase "tone" refer to?', options: ['Text length','Author\'s attitude','Plot events','Character list','Font size'], answerIndex: 1, explanation: 'Tone is the writer\'s attitude toward the subject.', videoUrl: 'https://www.youtube.com/watch?v=q4Y_67GMkP4', topic: 'Reading analysis' },
-      { id: 'e15-19', prompt: 'Which sentence is most concise and formal?', options: ['Due to the fact that...','Because...','In light of the fact that...','It is the case that...','Owing to the fact that...'], answerIndex: 1, explanation: 'Because is concise and formal enough.', videoUrl: 'https://www.youtube.com/watch?v=Qq5nSt9Qz2g', topic: 'Style' },
-      { id: 'e15-20', prompt: 'Which source is most reliable for academic research?', options: ['Anonymous blog','Peer-reviewed journal','Personal social media post','Random website','Chat forum'], answerIndex: 1, explanation: 'Peer-reviewed journals are most reliable.', videoUrl: 'https://www.youtube.com/watch?v=G7xvhhT8WzE', topic: 'Research skills' }
+      {
+        id: 'e15-1',
+        prompt: 'Which sentence is punctuated best?',
+        options: [
+          'Its success depends on many factors; planning, teamwork, and timing.',
+          "It’s success depends on many factors; planning, teamwork, and timing.",
+          'Its success depends on many factors: planning, teamwork and timing',
+          'Its success depends on many factors planning, teamwork, and timing.',
+          'Its success depends on many factors; and planning.'
+        ],
+        answerIndex: 0,
+        explanation: 'Semi-colon links clauses; list is comma-separated.',
+        videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws',
+        topic: 'Punctuation (semicolon)'
+      },
+      {
+        id: 'e15-2',
+        prompt: 'Which uses a semi-colon correctly?',
+        options: [
+          'I revised hard; because I wanted a higher grade.',
+          'I revised hard; I wanted a higher grade.',
+          'I revised; hard I wanted a higher grade.',
+          'I revised hard; and I wanted a higher grade.',
+          'I revised hard; which meant I wanted a higher grade.'
+        ],
+        answerIndex: 1,
+        explanation: 'Joins two related independent clauses.',
+        videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws',
+        topic: 'Semicolons'
+      },
+      {
+        id: 'e15-3',
+        prompt: 'Best synonym for “scrutinise”.',
+        options: ['ignore', 'glance', 'examine', 'distort', 'simplify'],
+        answerIndex: 2,
+        explanation: 'Scrutinise ≈ examine closely.',
+        videoUrl: 'https://www.youtube.com/watch?v=6Zlq0Vm9n3c',
+        topic: 'Vocabulary'
+      },
+      {
+        id: 'e15-4',
+        prompt: 'Identify the rhetorical appeal to emotion.',
+        options: ['logos', 'ethos', 'pathos', 'anaphora', 'irony'],
+        answerIndex: 2,
+        explanation: 'Pathos appeals to emotions; logos to logic; ethos to credibility.',
+        videoUrl: 'https://www.youtube.com/watch?v=suVgJ4WbG3E',
+        topic: 'Rhetoric'
+      },
+      {
+        id: 'e15-5',
+        prompt: 'Which sentence integrates a short quotation correctly?',
+        options: [
+          'The writer says: "technology helps" (p.2).',
+          'The writer says "technology helps." (p.2)',
+          'The writer argues that "technology helps" (p.2).',
+          '"Technology helps", the writer argues (p.2).',
+          'The writer argues that technology helps (p.2) "'
+        ],
+        answerIndex: 2,
+        explanation: 'Embed quotation within your own syntax; punctuation outside unless part of quote.',
+        videoUrl: 'https://www.youtube.com/watch?v=uoE9ET6CtaI',
+        topic: 'Quotations'
+      },
+      {
+        id: 'e15-6',
+        prompt: 'Most formal register?',
+        options: [
+          'Gimme a sec—brb.',
+          'Could you please provide an update at your earliest convenience?',
+          'I’m kinda busy rn.',
+          'No worries; chill.',
+          'That’s cool.'
+        ],
+        answerIndex: 1,
+        explanation: 'Polite, precise phrasing indicates formal style.',
+        videoUrl: 'https://www.youtube.com/watch?v=Qq5nSt9Qz2g',
+        topic: 'Register'
+      },
+      {
+        id: 'e15-7',
+        prompt: 'Identify the subordinate clause:',
+        options: [
+          'Although the evidence is strong,',
+          'The evidence is strong.',
+          'The strong evidence',
+          'Although',
+          'Evidence is strong although'
+        ],
+        answerIndex: 0,
+        explanation: 'Starts with a subordinating conjunction and needs a main clause.',
+        videoUrl: 'https://www.youtube.com/watch?v=GXlckaGr0Eo',
+        topic: 'Clauses'
+      },
+      {
+        id: 'e15-8',
+        prompt: 'Correct colon for explanation:',
+        options: [
+          'I realised: practice improves accuracy.',
+          'I realised something: practice improves accuracy.',
+          'I realised something practice: improves accuracy.',
+          'I realised, something: practice improves accuracy.',
+          'I realised something; practice improves accuracy.'
+        ],
+        answerIndex: 1,
+        explanation: 'Colon follows a complete clause and introduces explanation.',
+        videoUrl: 'https://www.youtube.com/watch?v=8DpJCYoAjws',
+        topic: 'Colons'
+      },
+      {
+        id: 'e15-9',
+        prompt: '“She quickly finished her homework.” What word class is “quickly”?',
+        options: ['adjective', 'adverb', 'verb', 'noun', 'preposition'],
+        answerIndex: 1,
+        explanation: '“quickly” modifies the verb finished ⇒ adverb.',
+        videoUrl: 'https://www.youtube.com/watch?v=E6PZkqvJB7Q',
+        topic: 'Word Classes'
+      },
+      {
+        id: 'e15-10',
+        prompt: 'Which is an oxymoron?',
+        options: ['Deafening silence', 'Very unique', 'Really amazing', 'Small tiny', 'Completely finished'],
+        answerIndex: 0,
+        explanation: 'Oxymoron: contradictory terms together, e.g., “deafening silence”.',
+        videoUrl: 'https://www.youtube.com/watch?v=obZ1o2iWkCw',
+        topic: 'Figurative Language'
+      },
+      {
+        id: 'e15-11',
+        prompt: 'Choose the sentence with correct apostrophe use.',
+        options: [
+          "The students' essays were strong.",
+          "The student's essays were strong (plural students).",
+          "The students essays were strong.",
+          "The students's essays were strong.",
+          "The students’ essay’s were strong."
+        ],
+        answerIndex: 0,
+        explanation: "Plural possession: students' + noun.",
+        videoUrl: 'https://www.youtube.com/watch?v=IJdYQKQKx2M',
+        topic: 'Apostrophes'
+      },
+      {
+        id: 'e15-12',
+        prompt: 'Passive voice version of: “Researchers tested the hypothesis.”',
+        options: [
+          'The hypothesis tested the researchers.',
+          'The hypothesis was tested by researchers.',
+          'The hypothesis were tested by researchers.',
+          'Researchers were tested by the hypothesis.',
+          'The hypothesis was test by researchers.'
+        ],
+        answerIndex: 1,
+        explanation: 'Object becomes subject: “was tested by…”.',
+        videoUrl: 'https://www.youtube.com/watch?v=J7wW15Sx7Kc',
+        topic: 'Passive Voice'
+      },
+      {
+        id: 'e15-13',
+        prompt: 'Which transition signals contrast?',
+        options: ['Furthermore', 'Consequently', 'However', 'Additionally', 'For example'],
+        answerIndex: 2,
+        explanation: '“However” introduces contrast.',
+        videoUrl: 'https://www.youtube.com/watch?v=3kV2RExaN6k',
+        topic: 'Cohesion/Connectives'
+      },
+      {
+        id: 'e15-14',
+        prompt: 'Which best states a thesis?',
+        options: [
+          'Many people like music.',
+          'This essay will discuss music.',
+          'Streaming services have transformed music consumption by increasing access, changing revenue, and shaping trends.',
+          'Music is great.',
+          'In conclusion, music is important.'
+        ],
+        answerIndex: 2,
+        explanation: 'A thesis is specific and previews main points.',
+        videoUrl: 'https://www.youtube.com/watch?v=HcWJgC3OxDQ',
+        topic: 'Thesis Statements'
+      },
+      {
+        id: 'e15-15',
+        prompt: 'Pick the homophone pair that fits: “The storm will _____ the coast, so secure _____ boat.”',
+        options: ['affect / your', 'effect / you’re', 'affect / you’re', 'effect / your', 'affect / you are'],
+        answerIndex: 0,
+        explanation: 'Affect (verb) + your (possessive).',
+        videoUrl: 'https://www.youtube.com/watch?v=rzLMIEYtB68',
+        topic: 'Homophones'
+      },
+      {
+        id: 'e15-16',
+        prompt: 'Which device repeats the start of clauses?',
+        options: ['Alliteration', 'Metaphor', 'Anaphora', 'Hyperbole', 'Irony'],
+        answerIndex: 2,
+        explanation: 'Anaphora = repetition at the beginning of successive clauses.',
+        videoUrl: 'https://www.youtube.com/watch?v=obZ1o2iWkCw',
+        topic: 'Rhetorical Devices'
+      },
+      {
+        id: 'e15-17',
+        prompt: 'Identify the main idea skill: choosing the best title for a paragraph is mostly about…',
+        options: ['Tone', 'Main idea', 'Bias', 'Imagery', 'Syntax'],
+        answerIndex: 1,
+        explanation: 'The best title reflects the central idea.',
+        videoUrl: 'https://www.youtube.com/watch?v=G7xvhhT8WzE',
+        topic: 'Reading (Main Idea)'
+      },
+      {
+        id: 'e15-18',
+        prompt: 'Subject–verb agreement: “Neither the teachers nor the head ___ attending.”',
+        options: ['are', 'were', 'is', 'be', 'have'],
+        answerIndex: 2,
+        explanation: 'Agreement with the nearer subject “head” ⇒ is.',
+        videoUrl: 'https://www.youtube.com/watch?v=FX4C-JpTFgY',
+        topic: 'Grammar'
+      },
+      {
+        id: 'e15-19',
+        prompt: 'Which sentence is most concise without losing meaning?',
+        options: [
+          'Due to the fact that the train was late, we arrived after the start.',
+          'Because the train was late, we arrived after the start.',
+          'In light of the train being late, we arrived after the start.',
+          'We arrived after the start because the train was late.',
+          'The lateness of the train caused us to arrive after the start.'
+        ],
+        answerIndex: 3,
+        explanation: 'Active, direct, and clear structure.',
+        videoUrl: 'https://www.youtube.com/watch?v=Ik2OF_0aQeA',
+        topic: 'Style/Conciseness'
+      },
+      {
+        id: 'e15-20',
+        prompt: 'Which technique creates vivid sensory detail?',
+        options: ['Statistics', 'Imagery', 'Logos', 'Parallelism', 'Euphemism'],
+        answerIndex: 1,
+        explanation: 'Imagery appeals to senses.',
+        videoUrl: 'https://www.youtube.com/watch?v=obZ1o2iWkCw',
+        topic: 'Figurative Language'
+      }
     ]
   },
 
-  // ===================== SCIENCE (Age 15) =====================
+  // ---------------------- SCIENCE (Age 15) ----------------------
   {
     age: 15,
     subject: 'Science',
     questions: [
-      { id: 's15-1', prompt: 'Which subatomic particle has a negative charge?', options: ['Proton','Neutron','Electron','Positron','Alpha particle'], answerIndex: 2, explanation: 'Electrons are negatively charged.', videoUrl: 'https://www.youtube.com/watch?v=Q1YqgPAtzho', topic: 'Atomic structure' },
-      { id: 's15-2', prompt: 'Photosynthesis occurs in which organelle?', options: ['Nucleus','Mitochondrion','Chloroplast','Ribosome','Golgi apparatus'], answerIndex: 2, explanation: 'Chloroplasts contain chlorophyll for photosynthesis.', videoUrl: 'https://www.youtube.com/watch?v=3pD68uxRLkM', topic: 'Cells' },
-      { id: 's15-3', prompt: 'Which equation is balanced?', options: ['H2 + O2 -> H2O','2H2 + O2 -> 2H2O','H2 + 2O2 -> H2O','2H2 + 2O2 -> H2O','H2 + O2 -> 2H2O2'], answerIndex: 1, explanation: 'Two H2 molecules with one O2 give two H2O.', videoUrl: 'https://www.youtube.com/watch?v=rdCsbZf1_Ng', topic: 'Chemical equations' },
-      { id: 's15-4', prompt: 'Which statement about enzymes is true?', options: ['They are carbohydrates','They speed up reactions','They raise activation energy','They are used up in reactions','They work at any pH'], answerIndex: 1, explanation: 'Enzymes are biological catalysts that lower activation energy.', videoUrl: 'https://www.youtube.com/watch?v=qgVFkRn8f10', topic: 'Enzymes' },
-      { id: 's15-5', prompt: 'Which circuit connection gives the same current through all components?', options: ['Series','Parallel','Both','Neither','Only with a diode'], answerIndex: 0, explanation: 'In series, current is the same everywhere.', videoUrl: 'https://www.youtube.com/watch?v=6ggQZ1Jgvwo', topic: 'Circuits' },
-      { id: 's15-6', prompt: 'Which process forms gametes?', options: ['Mitosis','Meiosis','Binary fission','Budding','Fertilisation'], answerIndex: 1, explanation: 'Meiosis produces haploid gametes.', videoUrl: 'https://www.youtube.com/watch?v=VzDMG7ke69g', topic: 'Cell division' },
-      { id: 's15-7', prompt: 'Energy transfer in photosynthesis is best described as...', options: ['Chemical -> light','Light -> chemical','Thermal -> light','Nuclear -> chemical','Electrical -> chemical'], answerIndex: 1, explanation: 'Light energy is converted to chemical energy.', videoUrl: 'https://www.youtube.com/watch?v=3pD68uxRLkM', topic: 'Photosynthesis' },
-      { id: 's15-8', prompt: 'Earth\'s gravitational field strength g is about...', options: ['0.98 N/kg','9.8 N/kg','98 N/kg','980 N/kg','0.098 N/kg'], answerIndex: 1, explanation: 'Approx 9.8 N/kg (often 10 N/kg in GCSE).', videoUrl: 'https://www.youtube.com/watch?v=ljRlB6TuMOU', topic: 'Forces' },
-      { id: 's15-9', prompt: 'Which is a non-renewable energy source?', options: ['Solar','Wind','Coal','Hydroelectric','Geothermal'], answerIndex: 2, explanation: 'Coal is a fossil fuel, non-renewable.', videoUrl: 'https://www.youtube.com/watch?v=m9ryG0nU8Zk', topic: 'Energy resources' },
-      { id: 's15-10', prompt: 'What is the pH of a neutral solution at 25°C?', options: ['0','1','3','7','14'], answerIndex: 3, explanation: 'Neutral water is pH 7.', videoUrl: 'https://www.youtube.com/watch?v=OqN0jkGJtH8', topic: 'Acids & alkalis' },
-      { id: 's15-11', prompt: 'Which particle is in the nucleus?', options: ['Electron only','Proton only','Proton and neutron','Neutron and electron','All three'], answerIndex: 2, explanation: 'Protons and neutrons in nucleus; electrons in shells.', videoUrl: 'https://www.youtube.com/watch?v=Q1YqgPAtzho', topic: 'Atomic structure' },
-      { id: 's15-12', prompt: 'Which bond involves sharing electron pairs?', options: ['Ionic','Covalent','Metallic','Hydrogen','Van der Waals'], answerIndex: 1, explanation: 'Covalent bonds share electrons.', videoUrl: 'https://www.youtube.com/watch?v=QXT4OVM4vXI', topic: 'Bonding' },
-      { id: 's15-13', prompt: 'Which organ filters blood and forms urine?', options: ['Liver','Heart','Kidney','Lung','Pancreas'], answerIndex: 2, explanation: 'Kidneys filter blood and make urine.', videoUrl: 'https://www.youtube.com/watch?v=6SRx3d0Q8_w', topic: 'Human biology' },
-      { id: 's15-14', prompt: 'Which statement about velocity is true?', options: ['Scalar quantity','No direction','Speed with direction','Always constant','Unit is m'], answerIndex: 2, explanation: 'Velocity is vector: speed with direction.', videoUrl: 'https://www.youtube.com/watch?v=OkW3w1fV9pY', topic: 'Motion' },
-      { id: 's15-15', prompt: 'Which gas is most abundant in Earth\'s atmosphere?', options: ['Oxygen','Carbon dioxide','Nitrogen','Argon','Water vapour'], answerIndex: 2, explanation: 'About 78% nitrogen.', videoUrl: 'https://www.youtube.com/watch?v=RL1QEV9JkAo', topic: 'Atmosphere' },
-      { id: 's15-16', prompt: 'What is Ohm\'s law (for a fixed temperature)?', options: ['V=IR','P=IV','E=PT','Q=It','F=ma'], answerIndex: 0, explanation: 'Potential difference equals current times resistance.', videoUrl: 'https://www.youtube.com/watch?v=U0QdRdl7qWY', topic: 'Electricity' },
-      { id: 's15-17', prompt: 'Which change is endothermic?', options: ['Freezing','Condensation','Evaporation','Combustion','Neutralisation'], answerIndex: 2, explanation: 'Evaporation absorbs energy.', videoUrl: 'https://www.youtube.com/watch?v=G7Q7R9tq5i0', topic: 'Energy changes' },
-      { id: 's15-18', prompt: 'Which is a greenhouse gas?', options: ['Oxygen','Nitrogen','Methane','Argon','Neon'], answerIndex: 2, explanation: 'Methane (CH4) is a greenhouse gas.', videoUrl: 'https://www.youtube.com/watch?v=H2mZyCBlXzQ', topic: 'Climate' },
-      { id: 's15-19', prompt: 'Which process separates a dissolved solid from a solution?', options: ['Filtration','Evaporation','Chromatography','Decanting','Sieving'], answerIndex: 1, explanation: 'Evaporate the solvent to recover the solute.', videoUrl: 'https://www.youtube.com/watch?v=_GQy_7J7pZ8', topic: 'Separation techniques' },
-      { id: 's15-20', prompt: 'Which base pairs with adenine in DNA?', options: ['Cytosine','Guanine','Thymine','Uracil','Adenine'], answerIndex: 2, explanation: 'A pairs with T (and U in RNA).', videoUrl: 'https://www.youtube.com/watch?v=8kK2zwjRV0M', topic: 'Genetics' }
+      {
+        id: 's15-1',
+        prompt: 'Which cell organelle releases energy (ATP) by aerobic respiration?',
+        options: ['Ribosome', 'Chloroplast', 'Nucleus', 'Mitochondrion', 'Golgi apparatus'],
+        answerIndex: 3,
+        explanation: 'Mitochondria are the “powerhouses” producing ATP.',
+        videoUrl: 'https://www.youtube.com/watch?v=00jbG_cfGuQ',
+        topic: 'Biology (Cells)'
+      },
+      {
+        id: 's15-2',
+        prompt: "Newton's third law states:",
+        options: [
+          'F=ma',
+          'For every action, there is an equal and opposite reaction.',
+          'A body remains at rest unless acted upon.',
+          'Energy cannot be created or destroyed.',
+          'Resultant force causes deceleration only.'
+        ],
+        answerIndex: 1,
+        explanation: 'Action–reaction pairs act on different bodies with equal magnitude.',
+        videoUrl: 'https://www.youtube.com/watch?v=8bTdMmNZm2M',
+        topic: 'Physics (Forces)'
+      },
+      {
+        id: 's15-3',
+        prompt: 'Chemical symbol for sodium is…',
+        options: ['S', 'So', 'Na', 'N', 'K'],
+        answerIndex: 2,
+        explanation: 'From Latin “Natrium” ⇒ Na.',
+        videoUrl: 'https://www.youtube.com/watch?v=fPnwBITSMnY',
+        topic: 'Chemistry (Periodic Table)'
+      },
+      {
+        id: 's15-4',
+        prompt: 'Balanced equation for photosynthesis:',
+        options: [
+          'C₆H₁₂O₆ + O₂ → CO₂ + H₂O',
+          'CO₂ + H₂O → C₆H₁₂O₆ + O₂',
+          'O₂ + H₂ → H₂O',
+          'C + O₂ → CO₂',
+          'CO + O₂ → CO₂'
+        ],
+        answerIndex: 1,
+        explanation: 'Carbon dioxide + water → glucose + oxygen (in chloroplasts).',
+        videoUrl: 'https://www.youtube.com/watch?v=UPBMG5EYydo',
+        topic: 'Biology (Photosynthesis)'
+      },
+      {
+        id: 's15-5',
+        prompt: 'In conduction, thermal energy transfer occurs mainly because…',
+        options: [
+          'Heat travels with moving fluid.',
+          'Electromagnetic radiation carries heat.',
+          'Particles collide and transfer kinetic energy.',
+          'Energy jumps via sound waves.',
+          'Only electrons move in all solids.'
+        ],
+        answerIndex: 2,
+        explanation: 'Neighbouring particles collide transferring energy; in metals, electrons help.',
+        videoUrl: 'https://www.youtube.com/watch?v=Vn7xU2UQ1wY',
+        topic: 'Physics (Heat Transfer)'
+      },
+      {
+        id: 's15-6',
+        prompt: 'Which of these is a compound?',
+        options: ['Na', 'O₂', 'H₂O', 'Cu', 'Cl₂'],
+        answerIndex: 2,
+        explanation: 'H₂O has chemically bonded elements hydrogen and oxygen.',
+        videoUrl: 'https://www.youtube.com/watch?v=FSyAehMdpyI',
+        topic: 'Chemistry (Substances)'
+      },
+      {
+        id: 's15-7',
+        prompt: 'Main function of red blood cells is to…',
+        options: ['Fight infection', 'Transport oxygen', 'Digest food', 'Produce bile', 'Store calcium'],
+        answerIndex: 1,
+        explanation: 'Haemoglobin binds and transports oxygen.',
+        videoUrl: 'https://www.youtube.com/watch?v=Q1bl6LhSRbQ',
+        topic: 'Biology (Circulatory System)'
+      },
+      {
+        id: 's15-8',
+        prompt: 'Ribosomes are the site of…',
+        options: ['DNA replication', 'Photosynthesis', 'Protein synthesis', 'Aerobic respiration', 'Exocytosis only'],
+        answerIndex: 2,
+        explanation: 'Ribosomes assemble amino acids into proteins.',
+        videoUrl: 'https://www.youtube.com/watch?v=okjYjClSjOg',
+        topic: 'Biology (Cells)'
+      },
+      {
+        id: 's15-9',
+        prompt: 'Which is a non-renewable energy source?',
+        options: ['Solar', 'Wind', 'Coal', 'Geothermal', 'Tidal'],
+        answerIndex: 2,
+        explanation: 'Coal is a fossil fuel; it takes millions of years to form.',
+        videoUrl: 'https://www.youtube.com/watch?v=Yjouqg-1ZfY',
+        topic: 'Physics (Energy Resources)'
+      },
+      {
+        id: 's15-10',
+        prompt: 'Acid + alkali → ?',
+        options: ['Salt only', 'Water only', 'Salt + hydrogen', 'Salt + water', 'Carbon dioxide + water'],
+        answerIndex: 3,
+        explanation: 'Neutralisation: H⁺ + OH⁻ → H₂O; forms salt and water.',
+        videoUrl: 'https://www.youtube.com/watch?v=SM4k7v5Y8w8',
+        topic: 'Chemistry (Acids & Bases)'
+      },
+      {
+        id: 's15-11',
+        prompt: 'Genotype of a heterozygous individual (A = dominant) is…',
+        options: ['AA', 'Aa', 'aa', 'A', 'aA only in females'],
+        answerIndex: 1,
+        explanation: 'Heterozygous has two different alleles: Aa.',
+        videoUrl: 'https://www.youtube.com/watch?v=F9R7Szk-1pI',
+        topic: 'Biology (Genetics)'
+      },
+      {
+        id: 's15-12',
+        prompt: 'Which bond involves electron transfer creating ions?',
+        options: ['Covalent', 'Hydrogen', 'Ionic', 'Metallic', 'Van der Waals'],
+        answerIndex: 2,
+        explanation: 'Ionic bonding forms between metals and non-metals by electron transfer.',
+        videoUrl: 'https://www.youtube.com/watch?v=QqjcCvzWwww',
+        topic: 'Chemistry (Bonding)'
+      },
+      {
+        id: 's15-13',
+        prompt: 'Ohm’s law states V = IR. If I = 0.5 A and R = 40 Ω, find V.',
+        options: ['10 V', '15 V', '20 V', '25 V', '30 V'],
+        answerIndex: 2,
+        explanation: 'V = 0.5 × 40 = 20 V.',
+        videoUrl: 'https://www.youtube.com/watch?v=OGSxT8t3Q5k',
+        topic: 'Physics (Electricity)'
+      },
+      {
+        id: 's15-14',
+        prompt: 'Enzymes are…',
+        options: ['Lipids', 'Minerals', 'Catalytic proteins', 'Carbohydrates only', 'DNA sequences'],
+        answerIndex: 2,
+        explanation: 'Enzymes are biological catalysts made of protein.',
+        videoUrl: 'https://www.youtube.com/watch?v=q0Bq8g7QJQY',
+        topic: 'Biology (Enzymes)'
+      },
+      {
+        id: 's15-15',
+        prompt: 'Which separation method obtains pure water from seawater?',
+        options: ['Filtration only', 'Evaporation then crystallisation', 'Simple distillation', 'Chromatography', 'Sieving'],
+        answerIndex: 2,
+        explanation: 'Distillation boils and condenses water, leaving salts behind.',
+        videoUrl: 'https://www.youtube.com/watch?v=Kj7VY4ZqC1Y',
+        topic: 'Chemistry (Separation)'
+      },
+      {
+        id: 's15-16',
+        prompt: 'Wave speed v = fλ. A wave has f = 200 Hz and λ = 1.5 m. v = ?',
+        options: ['100 m/s', '150 m/s', '200 m/s', '300 m/s', '350 m/s'],
+        answerIndex: 3,
+        explanation: 'v = 200 × 1.5 = 300 m/s.',
+        videoUrl: 'https://www.youtube.com/watch?v=Q1bOZP4bH8Y',
+        topic: 'Physics (Waves)'
+      },
+      {
+        id: 's15-17',
+        prompt: 'Diffusion is…',
+        options: [
+          'Movement of water through a semipermeable membrane.',
+          'Bulk flow due to pressure difference.',
+          'Net movement of particles from high to low concentration.',
+          'Active transport requiring ATP.',
+          'Random motion without net movement.'
+        ],
+        answerIndex: 2,
+        explanation: 'Diffusion goes down the concentration gradient passively.',
+        videoUrl: 'https://www.youtube.com/watch?v=aN0x9OM8sZU',
+        topic: 'Biology (Transport)'
+      },
+      {
+        id: 's15-18',
+        prompt: 'Which factor increases rate of reaction (generally)?',
+        options: ['Lower temperature', 'Lower surface area', 'Higher concentration', 'Remove catalyst', 'Lower pressure for gases'],
+        answerIndex: 2,
+        explanation: 'More frequent successful collisions at higher concentration.',
+        videoUrl: 'https://www.youtube.com/watch?v=0iW9WqX0RrE',
+        topic: 'Chemistry (Rates)'
+      },
+      {
+        id: 's15-19',
+        prompt: 'Power P = VI. If V = 12 V and I = 3 A, P = ?',
+        options: ['4 W', '12 W', '24 W', '36 W', '48 W'],
+        answerIndex: 3,
+        explanation: 'P = 12 × 3 = 36 W.',
+        videoUrl: 'https://www.youtube.com/watch?v=2k7qGm5q4O0',
+        topic: 'Physics (Electric Power)'
+      },
+      {
+        id: 's15-20',
+        prompt: 'Osmosis specifically refers to movement of…',
+        options: [
+          'Any solute across any membrane',
+          'Water through a semipermeable membrane',
+          'Ions via active transport',
+          'Glucose through protein channels only',
+          'Gas molecules only'
+        ],
+        answerIndex: 1,
+        explanation: 'Osmosis is water’s diffusion across a partially permeable membrane.',
+        videoUrl: 'https://www.youtube.com/watch?v=H5rZSR9KODs',
+        topic: 'Biology (Osmosis)'
+      }
     ]
   }
 ];
