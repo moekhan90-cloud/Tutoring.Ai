@@ -1,4 +1,3 @@
-// components/Quiz.jsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -8,7 +7,6 @@ function cls(...a) {
 }
 
 export default function Quiz({ set }) {
-  // Guard: if the page passed nothing in, show a friendly message
   if (!set || !set.questions || set.questions.length === 0) {
     return (
       <div className="max-w-3xl mx-auto p-6">
@@ -21,24 +19,22 @@ export default function Quiz({ set }) {
   }
 
   const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState(null); // number | null
+  const [selected, setSelected] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(
     set.questions[0]?.timeLimitSeconds ?? 30
   );
   const [score, setScore] = useState(0);
-  const [history, setHistory] = useState([]); // {id, correct, time}[]
+  const [history, setHistory] = useState([]);
 
   const q = set.questions[index];
 
-  // Reset state on question change
   useEffect(() => {
     setSecondsLeft(q?.timeLimitSeconds ?? 30);
     setSelected(null);
     setShowAnswer(false);
-  }, [index]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [index]);
 
-  // Countdown timer (paused while answer is shown)
   useEffect(() => {
     if (showAnswer) return;
     if (secondsLeft <= 0) return;
@@ -46,16 +42,12 @@ export default function Quiz({ set }) {
     return () => clearTimeout(t);
   }, [secondsLeft, showAnswer]);
 
-  // Auto-reveal when time runs out
   useEffect(() => {
-    if (secondsLeft === 0 && !showAnswer) {
-      handleReveal();
-    }
+    if (secondsLeft === 0 && !showAnswer) handleReveal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secondsLeft]);
 
-  const progress =
-    set.questions.length > 0 ? (index / set.questions.length) * 100 : 0;
+  const progress = (index / set.questions.length) * 100;
 
   function handleSelect(i) {
     if (showAnswer) return;
@@ -72,11 +64,8 @@ export default function Quiz({ set }) {
   }
 
   function handleNext() {
-    if (index + 1 < set.questions.length) {
-      setIndex((i) => i + 1);
-    } else {
-      setShowAnswer(true);
-    }
+    if (index + 1 < set.questions.length) setIndex((i) => i + 1);
+    else setShowAnswer(true);
   }
 
   const finished = index >= set.questions.length - 1 && showAnswer;
@@ -119,10 +108,7 @@ export default function Quiz({ set }) {
                     !showAnswer && 'hover:bg-gray-50',
                     selected === i && !showAnswer && 'border-blue-500 ring-2 ring-blue-300',
                     showAnswer && i === q.answerIndex && 'border-green-500 bg-green-50',
-                    showAnswer &&
-                      selected === i &&
-                      i !== q.answerIndex &&
-                      'border-red-500 bg-red-50'
+                    showAnswer && selected === i && i !== q.answerIndex && 'border-red-500 bg-red-50'
                   )}
                 >
                   <span className="mr-2 font-semibold">
