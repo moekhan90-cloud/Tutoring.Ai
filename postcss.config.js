@@ -1,6 +1,2 @@
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
+// postcss.config.js — Tailwind removed
+module.exports = {};
