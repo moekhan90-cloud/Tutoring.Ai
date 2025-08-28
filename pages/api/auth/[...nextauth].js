@@ -4,7 +4,7 @@ import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 
-// 🔑 Export the config so pages like /dashboard can import it
+// Exported so server pages (e.g., dashboard) can import it
 export const authOptions = {
   providers: [
     Credentials({
