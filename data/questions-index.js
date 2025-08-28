@@ -1,45 +1,55 @@
 // data/questions-index.js
-// Aggregates all age question sets (8–15)
 
-import { AGE8_QUESTION_SETS } from './questions-age8.js';
-import { AGE9_QUESTION_SETS } from './questions-age9.js';
-import { AGE10_QUESTION_SETS } from './questions-age10.js';
-import { AGE11_QUESTION_SETS } from './questions-age11.js';
-import { AGE12_QUESTION_SETS } from './questions-age12.js';
-import { AGE13_QUESTION_SETS } from './questions-age13.js';
-import { AGE14_QUESTION_SETS } from './questions-age14.js';
-import { AGE15_QUESTION_SETS } from './questions-age15.js';
+// Import every age file you have.
+// These files should each export an array named like AGE8_QUESTION_SETS, AGE9_QUESTION_SETS, etc.
+// If you don’t have some ages yet, leave the import commented out or create a minimal file.
 
-const def = (x) => (Array.isArray(x) ? x : []);
+import { AGE8_QUESTION_SETS } from './questions-age8';
+import { AGE9_QUESTION_SETS } from './questions-age9';
+import { AGE10_QUESTION_SETS } from './questions-age10';
+import { AGE11_QUESTION_SETS } from './questions-age11';
+import { AGE12_QUESTION_SETS } from './questions-age12';
+import { AGE13_QUESTION_SETS } from './questions-age13';
+import { AGE14_QUESTION_SETS } from './questions-age14';
+import { AGE15_QUESTION_SETS } from './questions-age15'; // we created this earlier
 
+// Merge everything into one array
 export const ALL_QUESTION_SETS = [
-  ...def(AGE8_QUESTION_SETS),
-  ...def(AGE9_QUESTION_SETS),
-  ...def(AGE10_QUESTION_SETS),
-  ...def(AGE11_QUESTION_SETS),
-  ...def(AGE12_QUESTION_SETS),
-  ...def(AGE13_QUESTION_SETS),
-  ...def(AGE14_QUESTION_SETS),
-  ...def(AGE15_QUESTION_SETS),
+  ...(AGE8_QUESTION_SETS || []),
+  ...(AGE9_QUESTION_SETS || []),
+  ...(AGE10_QUESTION_SETS || []),
+  ...(AGE11_QUESTION_SETS || []),
+  ...(AGE12_QUESTION_SETS || []),
+  ...(AGE13_QUESTION_SETS || []),
+  ...(AGE14_QUESTION_SETS || []),
+  ...(AGE15_QUESTION_SETS || [])
 ];
 
-// ---------- Helpers ----------
-/** Find a set by age + subject */
-export const getQuestionSet = (age, subject) =>
-  ALL_QUESTION_SETS.find(
-    (s) => s.age === Number(age) && s.subject === subject
+// Helper to fetch a specific set by age + subject.
+export function getQuestionSet(age, subject) {
+  const set = ALL_QUESTION_SETS.find(
+    s => String(s.age) === String(age) && s.subject === subject
   );
+  if (!set) {
+    console.warn(`[questions-index] No set for age=${age}, subject=${subject}`);
+    return { age: Number(age), subject, questions: [] };
+  }
+  if (!Array.isArray(set.questions)) {
+    console.warn(`[questions-index] questions is not an array for age=${age}, subject=${subject}`);
+    return { age: Number(age), subject, questions: [] };
+  }
+  return set;
+}
 
-/** All ages that have at least one subject populated */
-export const getAges = () =>
-  [...new Set(ALL_QUESTION_SETS.map((s) => s.age))].sort((a, b) => a - b);
-
-/** Subjects available for a given age */
-export const getSubjectsForAge = (age) =>
-  [
-    ...new Set(
-      ALL_QUESTION_SETS.filter((s) => s.age === Number(age)).map(
-        (s) => s.subject
-      )
-    ),
-  ];
+// Optional: expose available subjects/ages to build menus
+export const AVAILABLE = (() => {
+  const byAge = {};
+  for (const s of ALL_QUESTION_SETS) {
+    byAge[s.age] = byAge[s.age] || new Set();
+    byAge[s.age].add(s.subject);
+  }
+  // convert Set to array for easier rendering
+  return Object.fromEntries(
+    Object.entries(byAge).map(([age, set]) => [age, Array.from(set)])
+  );
+})();
