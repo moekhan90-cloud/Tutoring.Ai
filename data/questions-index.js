@@ -1,8 +1,9 @@
 // data/questions-index.js
-// Central index for all question sets (ages 8–15, subjects: Maths, English, Science)
+// Central index for all ages 8–15 and subjects Maths/English/Science.
+// Safe against missing files, wrong subject strings, or empty question arrays.
 
-import { AGE8_QUESTION_SETS }  from './questions-age8';
-import { AGE9_QUESTION_SETS }  from './questions-age9';
+import { AGE8_QUESTION_SETS  } from './questions-age8';
+import { AGE9_QUESTION_SETS  } from './questions-age9';
 import { AGE10_QUESTION_SETS } from './questions-age10';
 import { AGE11_QUESTION_SETS } from './questions-age11';
 import { AGE12_QUESTION_SETS } from './questions-age12';
@@ -10,87 +11,91 @@ import { AGE13_QUESTION_SETS } from './questions-age13';
 import { AGE14_QUESTION_SETS } from './questions-age14';
 import { AGE15_QUESTION_SETS } from './questions-age15';
 
-// Canonical keys used in your data files
-export const SUBJECTS = ['Maths', 'English', 'Science'];
+// Canonical subject keys used by the data files:
+export const SUBJECT_KEYS = ['Maths', 'English', 'Science'];
 export const AGES = [8, 9, 10, 11, 12, 13, 14, 15];
 
-// Some UIs may pass “Mathematics”; normalise here
-function normaliseSubject(s) {
+// Normalise any UI labels to the internal keys
+export function normaliseSubject(s) {
   if (!s) return 'Maths';
-  const val = String(s).trim().toLowerCase();
-  if (val === 'mathematics') return 'Maths';
-  const found = SUBJECTS.find(k => k.toLowerCase() === val);
-  return found || 'Maths';
+  const v = String(s).trim().toLowerCase();
+  if (v === 'mathematics') return 'Maths';
+  const hit = SUBJECT_KEYS.find(k => k.toLowerCase() === v);
+  return hit || 'Maths';
 }
 
-// Merge everything into one flat array
+// Defensive helper to make sure each imported bundle is an array
+function safe(arr, label) {
+  if (!Array.isArray(arr)) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[questions-index] Expected array from ${label}, got:`, arr);
+      console.warn('→ Make sure that file exports:  export const ' + label + ' = [ ... ]');
+    }
+    return [];
+  }
+  return arr;
+}
+
+// Merge *all* ages into one flat array and tidy types
 export const ALL_QUESTION_SETS = [
-  ...(AGE8_QUESTION_SETS  || []),
-  ...(AGE9_QUESTION_SETS  || []),
-  ...(AGE10_QUESTION_SETS || []),
-  ...(AGE11_QUESTION_SETS || []),
-  ...(AGE12_QUESTION_SETS || []),
-  ...(AGE13_QUESTION_SETS || []),
-  ...(AGE14_QUESTION_SETS || []),
-  ...(AGE15_QUESTION_SETS || [])
-].map(set => ({
-  // Defensive tidy-up to avoid odd shapes
-  age: Number(set.age),
-  subject: normaliseSubject(set.subject),
-  questions: Array.isArray(set.questions) ? set.questions : []
+  ...safe(AGE8_QUESTION_SETS,  'AGE8_QUESTION_SETS'),
+  ...safe(AGE9_QUESTION_SETS,  'AGE9_QUESTION_SETS'),
+  ...safe(AGE10_QUESTION_SETS, 'AGE10_QUESTION_SETS'),
+  ...safe(AGE11_QUESTION_SETS, 'AGE11_QUESTION_SETS'),
+  ...safe(AGE12_QUESTION_SETS, 'AGE12_QUESTION_SETS'),
+  ...safe(AGE13_QUESTION_SETS, 'AGE13_QUESTION_SETS'),
+  ...safe(AGE14_QUESTION_SETS, 'AGE14_QUESTION_SETS'),
+  ...safe(AGE15_QUESTION_SETS, 'AGE15_QUESTION_SETS'),
+].map((set, i) => ({
+  age: Number(set?.age),
+  subject: normaliseSubject(set?.subject),
+  questions: Array.isArray(set?.questions) ? set.questions : [],
+  __index: i
 }));
 
 /**
- * Fetch a specific set by age + subject.
- * Returns an object { age, subject, questions[] }.
- * If not found, returns an empty set (so the UI can show a friendly “no questions” card).
+ * Get a specific set by age + subject.
+ * Returns { age, subject, questions[] }.
+ * If not found, returns an empty set (so the UI can show a friendly message).
  */
 export function getQuestionSet(age, subject) {
-  const subj = normaliseSubject(subject);
-  const targetAge = Number(age);
-  const found = ALL_QUESTION_SETS.find(s => s.age === targetAge && s.subject === subj);
+  const a = Number(age);
+  const s = normaliseSubject(subject);
+  const found = ALL_QUESTION_SETS.find(x => x.age === a && x.subject === s);
   if (!found) {
-    if (typeof window !== 'undefined') {
-      // Client-only warning (won't spam server logs)
-      console.warn(`[questions-index] No set for age=${targetAge}, subject=${subj}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[questions-index] No set for age=${a} subject=${s}.` +
+        ' Check that data/questions-age' + a + '.js exports that subject and that it is imported here.');
     }
-    return { age: targetAge, subject: subj, questions: [] };
+    return { age: a, subject: s, questions: [] };
   }
   return found;
 }
 
 /**
- * Convenience: what subjects exist for each age?
- * Example: AVAILABLE['12'] -> ['Maths','English','Science']
+ * AVAILABLE: { [age]: ['Maths','English','Science'] } where sets exist with ≥1 question
  */
 export const AVAILABLE = (() => {
-  const byAge = {};
+  const map = {};
   for (const s of ALL_QUESTION_SETS) {
-    if (!byAge[s.age]) byAge[s.age] = new Set();
-    if (s.questions && s.questions.length) byAge[s.age].add(s.subject);
+    if (!map[s.age]) map[s.age] = new Set();
+    if (s.questions.length) map[s.age].add(s.subject);
   }
-  // Convert Set -> array
-  return Object.fromEntries(
-    Object.entries(byAge).map(([age, set]) => [age, Array.from(set).sort()])
-  );
+  return Object.fromEntries(Object.entries(map).map(([k, v]) => [k, Array.from(v).sort()]));
 })();
 
-/**
- * Convenience: all sets for a given age.
- */
+/** Get all sets for a given age that actually have questions */
 export function getSetsForAge(age) {
-  const targetAge = Number(age);
-  return ALL_QUESTION_SETS.filter(s => s.age === targetAge && s.questions.length > 0);
+  const a = Number(age);
+  return ALL_QUESTION_SETS.filter(s => s.age === a && s.questions.length > 0);
 }
 
-/**
- * Convenience: all ages where a subject exists.
- */
+/** Get all ages that contain the given subject */
 export function getAgesForSubject(subject) {
   const subj = normaliseSubject(subject);
   const ages = new Set();
   for (const s of ALL_QUESTION_SETS) {
     if (s.subject === subj && s.questions.length > 0) ages.add(s.age);
   }
-  return Array.from(ages).sort((a,b)=>a-b);
+  return Array.from(ages).sort((x,y)=>x-y);
 }
