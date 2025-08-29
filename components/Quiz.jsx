@@ -1,203 +1,242 @@
 // components/Quiz.jsx
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-function cls(...a){ return a.filter(Boolean).join(' '); }
+function cls(...a) {
+  return a.filter(Boolean).join(' ');
+}
 
 export default function Quiz({ set }) {
+  // set = { age, subject, questions: [...] }
+  const questions = set?.questions ?? [];
+
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
 
-  // Stopwatch state
-  const [elapsed, setElapsed] = useState(0);       // seconds for current question
-  const tickRef = useRef(null);
-  const startRef = useRef(null);
+  // timing
+  const [questionStartTs, setQuestionStartTs] = useState(() => Date.now());
+  const [totalElapsedMs, setTotalElapsedMs] = useState(0);
 
-  // Results
+  // scoring + history
   const [score, setScore] = useState(0);
-  const [history, setHistory] = useState([]); // {id, correct, time}
+  const [history, setHistory] = useState([]);
 
-  const q = set?.questions?.[index];
+  const q = questions[index];
 
-  // start stopwatch for each question
+  // Reset per-question UI when index changes, and start a new timer
   useEffect(() => {
-    if (!q) return;
-    setElapsed(0);
-    startRef.current = Date.now();
-    clearInterval(tickRef.current);
-    tickRef.current = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
-    }, 250);
     setSelected(null);
     setShowAnswer(false);
-    return () => clearInterval(tickRef.current);
-  }, [index, q?.id]);
+    setQuestionStartTs(Date.now());
+  }, [index]);
 
-  // Reveal & record time
-  function handleReveal(){
-    if (showAnswer) return;
-    const seconds = Math.max(0, Math.floor((Date.now() - startRef.current) / 1000));
-    clearInterval(tickRef.current);
-    const correct = selected === q.answerIndex;
-    setShowAnswer(true);
-    setScore(s => s + (correct ? 1 : 0));
-    setHistory(h => [...h, { id: q.id, correct, time: seconds }]);
-    setElapsed(seconds); // freeze display
+  // Handle answer selection
+  function chooseOption(i) {
+    if (showAnswer) return; // lock after revealing
+    setSelected(i);
   }
 
-  function handleNext(){
-    if (index + 1 < set.questions.length){
+  // Reveal answer + record timing for this question
+  function reveal() {
+    if (!q || showAnswer) return;
+
+    const now = Date.now();
+    const timeMs = now - questionStartTs;
+
+    const correct = selected === q.answerIndex;
+    if (correct) setScore(s => s + 1);
+
+    setTotalElapsedMs(ms => ms + timeMs);
+
+    // push into history
+    setHistory(h => [
+      ...h,
+      {
+        qid: q.id,
+        prompt: q.prompt,
+        topic: q.topic,
+        selected,
+        correctAnswer: q.answerIndex,
+        correct,
+        timeMs,
+      },
+    ]);
+
+    setShowAnswer(true);
+  }
+
+  function next() {
+    if (index < questions.length - 1) {
       setIndex(i => i + 1);
     } else {
-      // finished — stop any timer just in case
-      clearInterval(tickRef.current);
-      setShowAnswer(true); // keep final state
+      // finished – optionally do something (analytics, API call, etc.)
+      // For now we just keep the summary on screen.
     }
   }
 
-  const finished = index >= (set?.questions?.length || 0) - 1 && showAnswer;
+  const finished = index >= questions.length;
+  const percent = useMemo(() => {
+    if (!questions.length) return 0;
+    return Math.round((score / questions.length) * 100);
+  }, [score, questions.length]);
 
-  const progressPct = useMemo(() => {
-    const total = set?.questions?.length || 1;
-    return Math.min(100, (index / total) * 100);
-  }, [index, set?.questions?.length]);
+  function fmt(ms) {
+    const s = Math.floor(ms / 1000);
+    const m = Math.floor(s / 60);
+    const ss = String(s % 60).padStart(2, '0');
+    return `${m}:${ss}`;
+  }
 
-  if (!q){
+  if (!questions.length) {
     return (
-      <div className="container">
-        <div className="card">
-          <h2>No questions found</h2>
-          <p>Add items to this set to start the quiz.</p>
+      <div className="mx-auto max-w-2xl p-4 text-center">
+        <h2 className="text-2xl font-semibold">No questions found</h2>
+        <p className="text-gray-600 mt-2">
+          We couldn’t find questions for <b>{set?.subject}</b> (age {set?.age}).<br />
+          Please check your <code>data/questions-age{String(set?.age)}.js</code> file exports for that subject.
+        </p>
+      </div>
+    );
+  }
+
+  // Finished summary
+  if (finished) {
+    return (
+      <div className="mx-auto max-w-3xl p-4">
+        <h2 className="text-3xl font-bold mb-2">Great work!</h2>
+        <p className="text-gray-700">
+          Subject: <b>{set.subject}</b> · Age: <b>{set.age}</b>
+        </p>
+        <p className="mt-2 text-lg">
+          Score: <b>{score}</b> / {questions.length} ({percent}%)
+        </p>
+        <p className="text-lg">Total time: <b>{fmt(totalElapsedMs)}</b></p>
+
+        <div className="mt-6 border rounded-lg divide-y">
+          {history.map((h, i) => {
+            const correct = h.correct;
+            return (
+              <div key={h.qid} className="p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-sm text-gray-500">Q{i + 1} · {h.topic}</div>
+                    <div className="font-medium">{h.prompt}</div>
+                    <div className="mt-1 text-sm">
+                      Your answer: <b>{h.selected != null ? qOptionLabel(h.selected) : '—'}</b>{' '}
+                      {correct ? (
+                        <span className="ml-2 rounded bg-green-100 text-green-800 px-2 py-0.5 text-xs">Correct</span>
+                      ) : (
+                        <span className="ml-2 rounded bg-red-100 text-red-800 px-2 py-0.5 text-xs">Incorrect</span>
+                      )}
+                    </div>
+                    {!correct && (
+                      <div className="text-sm text-gray-600 mt-1">
+                        Correct answer: <b>{qOptionLabel(h.correctAnswer)}</b>
+                      </div>
+                    )}
+                  </div>
+                  <div className="shrink-0 text-sm text-gray-700">
+                    Time: <b>{fmt(h.timeMs)}</b>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="container">
-      <header style={{display:'flex',justifyContent:'space-between',alignItems:'center', marginBottom:12}}>
-        <h1>{set.subject} · Age {set.age}</h1>
-        <div style={{color:'var(--muted)'}}>{index+1} / {set.questions.length}</div>
-      </header>
+  // Helper to show labels for options by index (used in summary)
+  function qOptionLabel(i) {
+    // We may not have access to original q here (we're in summary), but history stores indexes.
+    // For labels in summary we don't need the exact text; if you prefer exact text,
+    // also store `options` per history item above.
+    return `Option ${i + 1}`;
+  }
 
-      <div className="progress" style={{marginBottom:16}}>
-        <span style={{width: `${progressPct}%`}} />
+  return (
+    <div className="mx-auto max-w-3xl p-4">
+      <div className="mb-4">
+        <div className="text-sm text-gray-500">
+          {set.subject} · Age {set.age} · Question {index + 1} of {questions.length}
+        </div>
+        <h2 className="text-2xl font-semibold mt-1">{q.prompt}</h2>
+        {q.topic && <div className="mt-1 text-gray-600 text-sm">Topic: {q.topic}</div>}
       </div>
 
-      {!finished && (
-        <>
-          <div className="card" style={{marginBottom:14}}>
-            <div style={{display:'flex',justifyContent:'space-between', alignItems:'center', gap:12}}>
-              <p style={{fontSize:18, fontWeight:600, margin:0}}>{q.prompt}</p>
-              <div className="kbd">⏱ {elapsed}s</div>
-            </div>
-          </div>
+      <div className="grid gap-3">
+        {q.options.map((opt, i) => {
+          const isSelected = selected === i;
+          // Highlight after reveal
+          const isCorrect = showAnswer && i === q.answerIndex;
+          const isWrong   = showAnswer && isSelected && i !== q.answerIndex;
 
-          <ul style={{listStyle:'none', padding:0, margin:0, display:'grid', gap:10}}>
-            {q.options.map((opt, i) => {
-              const stateClass = showAnswer
-                ? (i === q.answerIndex ? 'correct' : (selected === i ? 'wrong' : ''))
-                : '';
-              return (
-                <li key={i}>
-                  <button
-                    className={cls('option', stateClass)}
-                    onClick={() => !showAnswer && setSelected(i)}
-                  >
-                    <strong style={{marginRight:6}}>{String.fromCharCode(65+i)}.</strong> {opt}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          return (
+            <button
+              key={i}
+              onClick={() => chooseOption(i)}
+              className={cls(
+                'text-left rounded-lg border p-3 transition',
+                isSelected && !showAnswer && 'border-blue-500 ring-2 ring-blue-200',
+                isCorrect && 'border-green-600 bg-green-50',
+                isWrong && 'border-red-600 bg-red-50',
+                !isSelected && !showAnswer && 'hover:border-gray-400'
+              )}
+              disabled={showAnswer}
+            >
+              <span className="font-medium mr-2">{String.fromCharCode(65 + i)}.</span>
+              {opt}
+            </button>
+          );
+        })}
+      </div>
 
-          <div style={{display:'flex', gap:10, marginTop:14}}>
-            {!showAnswer ? (
-              <button
-                className={cls('btn','btn-primary')}
-                onClick={handleReveal}
-                disabled={selected === null}
-              >
-                Check answer
-              </button>
-            ) : (
-              <button className="btn btn-primary" onClick={handleNext}>
-                {index + 1 < set.questions.length ? 'Next' : 'Finish'}
-              </button>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        {!showAnswer ? (
+          <button
+            onClick={reveal}
+            disabled={selected == null}
+            className={cls(
+              'rounded-lg px-4 py-2 text-white',
+              selected == null ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
             )}
-            {!showAnswer && (
-              <button className="btn btn-ghost" onClick={() => setSelected(null)}>
-                Clear choice
-              </button>
-            )}
-          </div>
+          >
+            Check answer
+          </button>
+        ) : (
+          <button
+            onClick={next}
+            className="rounded-lg px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            {index < questions.length - 1 ? 'Next question' : 'See results'}
+          </button>
+        )}
 
-          {showAnswer && (
-            <div className="card" style={{marginTop:14}}>
-              <p style={{margin:'0 0 6px 0'}}>
-                ✅ Correct answer: <strong>{String.fromCharCode(65+q.answerIndex)}. {q.options[q.answerIndex]}</strong>
-              </p>
-              <p style={{margin:'0 0 8px 0', color:'var(--muted)'}}>{q.explanation}</p>
-              <div style={{display:'flex', gap:12, alignItems:'center'}}>
-                <span className="kbd">You took {elapsed}s</span>
-                {q.topic && <span className="btn-chip">{q.topic}</span>}
-                {q.videoUrl && (
-                  <a className="btn btn-ghost" href={q.videoUrl} target="_blank" rel="noreferrer">📺 Learning video</a>
-                )}
-              </div>
-            </div>
+        {/* Timing info (informational only) */}
+        <span className="text-sm text-gray-600 ml-auto">
+          Total time so far: <b>{fmt(totalElapsedMs)}</b>
+        </span>
+      </div>
+
+      {showAnswer && (
+        <div className="mt-4 rounded-lg border bg-gray-50 p-3">
+          <div className="font-medium">
+            Correct answer: {String.fromCharCode(65 + q.answerIndex)} — {q.options[q.answerIndex]}
+          </div>
+          {q.explanation && <div className="text-gray-700 mt-1">{q.explanation}</div>}
+          {q.videoUrl && (
+            <a
+              href={q.videoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block mt-2 text-blue-600 hover:underline"
+            >
+              Watch a quick refresher
+            </a>
           )}
-        </>
+        </div>
       )}
-
-      {finished && (
-        <Summary set={set} score={score} history={history} />
-      )}
-    </div>
-  );
-}
-
-function Summary({ set, score, history }){
-  const total = set.questions.length;
-  const totalTime = history.reduce((a,b)=>a+b.time,0);
-  const avg = history.length ? Math.round(totalTime / history.length) : 0;
-  const accuracy = Math.round((score / total) * 100);
-
-  return (
-    <div className="card">
-      <h2 style={{marginTop:0}}>Finished! 🎉</h2>
-      <p style={{marginTop:6, color:'var(--muted)'}}>{set.subject} · Age {set.age}</p>
-
-      <div className="grid" style={{marginTop:14}}>
-        <div className="card">
-          <div style={{fontSize:28, fontWeight:800}}>{score}/{total}</div>
-          <div style={{color:'var(--muted)'}}>Score</div>
-        </div>
-        <div className="card">
-          <div style={{fontSize:28, fontWeight:800}}>{accuracy}%</div>
-          <div style={{color:'var(--muted)'}}>Accuracy</div>
-        </div>
-        <div className="card">
-          <div style={{fontSize:28, fontWeight:800}}>{avg}s</div>
-          <div style={{color:'var(--muted)'}}>Avg time / question</div>
-        </div>
-        <div className="card">
-          <div style={{fontSize:28, fontWeight:800}}>{totalTime}s</div>
-          <div style={{color:'var(--muted)'}}>Total time</div>
-        </div>
-      </div>
-
-      <div style={{marginTop:14}}>
-        <h3 style={{marginTop:0}}>Per-question times</h3>
-        <ul style={{listStyle:'none', padding:0, margin:0, display:'grid', gap:8}}>
-          {history.map((h, i) => (
-            <li key={h.id} className="option" style={{display:'flex', justifyContent:'space-between'}}>
-              <span>Q{i+1} {h.correct ? '✅' : '❌'}</span>
-              <span className="kbd">{h.time}s</span>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
