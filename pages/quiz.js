@@ -1,110 +1,109 @@
 // pages/quiz.js
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { getQuestionSet } from '../data/questions-index'
-import Quiz from '../components/Quiz'
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
-// Internal keys in your data + nice labels for the UI
+// Adjust this import path if your helper lives elsewhere
+import { getQuestionSet } from '../data/questions-index';
+import Quiz from '../components/Quiz';
+
+// Display label vs internal value that matches your data files
 const SUBJECTS = [
-  { key: 'Maths',   label: 'Mathematics' },
-  { key: 'English', label: 'English' },
-  { key: 'Science', label: 'Science' }
+  { label: 'Mathematics', value: 'Maths' },
+  { label: 'English', value: 'English' },
+  { label: 'Science', value: 'Science' },
 ];
+
 const AGES = [8, 9, 10, 11, 12, 13, 14, 15];
 
 export default function QuizPage() {
   const router = useRouter();
-  const ageParam = router.query.age;
-  const subjectParam = router.query.subject;
+  const { age: ageParam, subject: subjectParam } = router.query;
 
-  // Normalise subject to your internal key
-  const subjectKey = (() => {
-    if (typeof subjectParam !== 'string') return 'Maths';
-    const found = SUBJECTS.find(
-      s => s.key.toLowerCase() === subjectParam.toLowerCase()
-        || s.label.toLowerCase() === subjectParam.toLowerCase()
-    );
-    return found ? found.key : 'Maths';
+  // Normalise age
+  const age = (() => {
+    const n = Number(ageParam);
+    return AGES.includes(n) ? n : 10;
   })();
 
-  const age = typeof ageParam === 'string' ? parseInt(ageParam, 10) : 10;
+  // Normalise subject (must be Maths | English | Science)
+  const allowed = SUBJECTS.map(s => s.value);
+  const subject = allowed.includes(String(subjectParam)) ? String(subjectParam) : 'Maths';
 
-  const set = getQuestionSet(age, subjectKey);
+  // Build the question set
+  const set = getQuestionSet(age, subject);
+
+  function handleStart(e) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const nextAge = Number(form.get('age'));
+    const nextSubject = String(form.get('subject')); // will be value ('Maths'|'English'|'Science')
+    router.push({ pathname: '/quiz', query: { age: nextAge, subject: nextSubject } });
+  }
 
   return (
     <>
-      <Head><title>Start a Quiz • Adaptive Tutoring.ai</title></Head>
-      <div className="container" style={{maxWidth: 860, margin: '0 auto', padding: 16}}>
-        <h1 style={{fontSize: 36, fontWeight: 800, margin: '8px 0 12px'}}>Start a Quiz</h1>
-        <p style={{color: '#60646c', marginBottom: 16}}>
-          Pick a subject and age. Each question is timed with a stopwatch;
-          you’ll get a summary of speed, accuracy, and topics to review.
+      <Head>
+        <title>Start a Quiz | Adaptive Tutoring.ai</title>
+      </Head>
+
+      <main style={{ maxWidth: 960, margin: '0 auto', padding: '24px' }}>
+        <h1 style={{ fontSize: 42, marginBottom: 12 }}>Start a Quiz</h1>
+        <p style={{ fontSize: 18, opacity: 0.9, marginBottom: 24 }}>
+          Pick a subject and age. Each question is timed; you’ll get a summary of speed, accuracy, and topics you’re struggling with.
         </p>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const f = new FormData(e.currentTarget);
-            const chosenSubject = f.get('subject');
-            const chosenAge = f.get('age');
-            router.push(`/quiz?subject=${encodeURIComponent(chosenSubject)}&age=${encodeURIComponent(chosenAge)}`);
-          }}
-          style={{display:'flex', gap: 12, alignItems:'center', flexWrap:'wrap', marginBottom: 16}}
-        >
-          <label>Subject</label>
-          <select name="subject" defaultValue={subjectKey} className="input">
-            {SUBJECTS.map(s => (
-              <option key={s.key} value={s.key}>{s.label}</option>
-            ))}
-          </select>
+        {/* Start form */}
+        <form onSubmit={handleStart} style={{
+          display: 'grid', gap: 16, padding: 16, borderRadius: 12,
+          background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)'
+        }}>
+          <label style={{ display: 'grid', gap: 8 }}>
+            <span>Subject</span>
+            <select
+              name="subject"
+              defaultValue={subject}
+              style={{ padding: '12px 14px', borderRadius: 10, background: '#0b1220', border: '1px solid #2a3553', color: 'white' }}
+            >
+              {SUBJECTS.map(s => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </label>
 
-          <label>Age</label>
-          <select name="age" defaultValue={age} className="input">
-            {AGES.map(a => <option key={a} value={a}>{a}</option>)}
-          </select>
+          <label style={{ display: 'grid', gap: 8 }}>
+            <span>Age</span>
+            <select
+              name="age"
+              defaultValue={age}
+              style={{ padding: '12px 14px', borderRadius: 10, background: '#0b1220', border: '1px solid #2a3553', color: 'white' }}
+            >
+              {AGES.map(a => (
+                <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </label>
 
-          <button className="btn btn-primary" type="submit">Start quiz</button>
+          <button type="submit" style={{
+            padding: '12px 16px', borderRadius: 10, border: '1px solid #3b82f6',
+            background: '#2563eb', color: 'white', fontWeight: 600, cursor: 'pointer', width: 140
+          }}>
+            Start quiz
+          </button>
         </form>
 
-        <div style={{display:'grid', gap:12, gridTemplateColumns:'repeat(auto-fit, minmax(220px,1fr))', marginBottom: 20}}>
-          {SUBJECTS.map(s => (
-            <div key={s.key} className="card">
-              <div style={{fontWeight:700}}>{s.label}</div>
-              <div style={{display:'flex', gap:10, marginTop:10, flexWrap:'wrap'}}>
-                {[8,10,12,15].map(a => (
-                  <a
-                    key={a}
-                    className="btn btn-chip"
-                    href={`/quiz?subject=${encodeURIComponent(s.key)}&age=${a}`}
-                  >
-                    Age {a}
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Quick start */}
+        <p style={{ marginTop: 18, marginBottom: 8, fontSize: 16 }}>
+          Quick start:&nbsp;
+          <a href={`/quiz?age=10&subject=Maths`} style={{ color: '#22d3ee' }}>Maths 10</a>,&nbsp;
+          <a href={`/quiz?age=12&subject=English`} style={{ color: '#22d3ee' }}>English 12</a>,&nbsp;
+          <a href={`/quiz?age=15&subject=Science`} style={{ color: '#22d3ee' }}>Science 15</a>
+        </p>
 
-        {(!set || !set.questions || set.questions.length === 0) ? (
-          <div className="card">
-            <h3 style={{marginTop:0}}>No questions found</h3>
-            <p style={{color:'#60646c'}}>
-              We couldn’t find a set for <b>{SUBJECTS.find(s=>s.key===subjectKey)?.label}</b> at age <b>{age}</b>.
-              Make sure the age file exports that subject and that it’s imported in <code>data/questions-index.js</code>.
-            </p>
-          </div>
-        ) : (
+        {/* Render the actual quiz */}
+        <div style={{ marginTop: 24 }}>
           <Quiz set={set} />
-        )}
-      </div>
-
-      <style jsx global>{`
-        .input { padding:8px 10px; border:1px solid #e3e5e8; border-radius:10px; }
-        .btn { padding:10px 14px; border-radius:12px; border:1px solid #e3e5e8; background:#fff; }
-        .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
-        .btn-chip { background:#eef2ff; border-color:#c7d2fe; }
-        .card { border:1px solid #e3e5e8; border-radius:16px; padding:14px; background:#fff; }
-      `}</style>
+        </div>
+      </main>
     </>
   );
 }
