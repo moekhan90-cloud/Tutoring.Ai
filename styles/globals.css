@@ -5,16 +5,6 @@
 /* Optional: You can add your own custom global styles below */
 
 /* Example: smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Example: set a default background and font color */
-body {
-  @apply bg-white text-gray-900;
-}
-
-/* Example: reset anchor link styles */
-a {
-  @apply text-blue-600 hover:underline;
+html, body {
+  height: 100%;
 }
